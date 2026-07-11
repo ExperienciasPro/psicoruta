@@ -550,7 +550,8 @@
   align-items: center;
   position: relative;
   z-index: 3;
-  margin-right: -60px;
+  margin-right: -100px;
+  margin-top: -40px;
 
   @media (max-width: 960px) {
     margin-right: 0;
@@ -559,25 +560,20 @@
 }
 
 .hero-illustration {
-  width: 110%;
-  max-width: 620px;
+  width: 130%;
+  max-width: 750px;
   height: auto;
   object-fit: contain;
   position: relative;
+  -webkit-mask-image: radial-gradient(ellipse 85% 80% at 45% 50%, black 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 85% 80% at 45% 50%, black 50%, transparent 100%);
 
   @media (max-width: 960px) {
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
+    max-width: 450px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, black 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, black 55%, transparent 100%);
   }
-}
-
-.hero-illustration-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.hero-illustration-glow {
-  display: none;
 }
 
 // Floating UI cards
