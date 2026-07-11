@@ -414,7 +414,9 @@
 .btn-outline-lg {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 16px 28px; border-radius: $radius-full;
-  background: transparent;
+  background: rgba($color-bg-primary, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: $color-text-primary; font-size: 1rem; font-weight: 600;
   text-decoration: none;
   border: 2px solid $color-border-strong;
@@ -423,7 +425,7 @@
   &:hover {
     border-color: $color-accent-primary;
     color: $color-accent-primary;
-    background: $color-accent-primary-glow;
+    background: rgba($color-accent-primary, 0.08);
   }
 }
 
