@@ -41,18 +41,18 @@ jobs:
 
       - name: 📂 Copiar build al directorio web
         run: |
-          sudo mkdir -p /var/www/psicoruta.com/dist/browser
-          sudo rm -rf /var/www/psicoruta.com/dist/browser/*
-          sudo cp -r dist/psicoruta-app/browser/* /var/www/psicoruta.com/dist/browser/
-          sudo chmod -R 755 /var/www/psicoruta.com/dist
-          echo "✅ Build copiado a /var/www/psicoruta.com/dist/browser/"
+          sudo mkdir -p /var/www/front-psicoruta.com
+          sudo rm -rf /var/www/front-psicoruta.com/*
+          sudo cp -r dist/psicoruta-app/browser/* /var/www/front-psicoruta.com/
+          sudo chmod -R 755 /var/www/front-psicoruta.com
+          echo "✅ Build copiado a /var/www/front-psicoruta.com/"
 
       - name: ⚡ Configurar Nginx
         run: |
-          sudo cp nginx/frontend.conf /etc/nginx/sites-available/psicoruta.com
+          sudo cp nginx/frontend.conf /etc/nginx/sites-available/front-psicoruta.com
 
-          if [ ! -L /etc/nginx/sites-enabled/psicoruta.com ]; then
-            sudo ln -s /etc/nginx/sites-available/psicoruta.com /etc/nginx/sites-enabled/
+          if [ ! -L /etc/nginx/sites-enabled/front-psicoruta.com ]; then
+            sudo ln -s /etc/nginx/sites-available/front-psicoruta.com /etc/nginx/sites-enabled/
           fi
 
           if sudo nginx -t 2>&1; then
