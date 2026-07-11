@@ -96,8 +96,7 @@ import { RouterLink } from '@angular/router';
           </div>
           <div class="hero-visual reveal-right delay-1">
             <div class="hero-illustration-wrapper">
-              <div class="hero-illustration-glow anim-pulse"></div>
-              <img src="assets/images/home/ilustracion.png" alt="Evolución clínica" class="hero-illustration anim-float-slow" />
+              <img src="assets/images/home/ilustracion.png" alt="Evolución clínica" class="hero-illustration" />
             </div>
           </div>
         </div>

@@ -490,20 +490,10 @@
   object-fit: contain;
   position: relative;
   z-index: 2;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.05));
 }
 
 .hero-illustration-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  height: 80%;
-  background: radial-gradient(circle, rgba($color-accent-primary, 0.4) 0%, transparent 70%);
-  z-index: 1;
-  filter: blur(40px);
+  display: none;
 }
 
 // Floating UI cards
