@@ -250,137 +250,46 @@
 .hero {
   position: relative;
   min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   padding: 120px 28px 80px;
   overflow: hidden;
+  background-color: $color-bg-primary;
+}
+
+.hero-bg-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../../assets/images/home/psicoruta2.png');
+  background-size: cover;
+  background-position: right center;
+  z-index: 1;
+  pointer-events: none;
+
+  @media (max-width: 1200px) {
+    background-position: 65% center;
+  }
+
+  @media (max-width: 960px) {
+    opacity: 0.15;
+    background-position: center;
+  }
 }
 
 .hero-inner {
-  display: grid;
-  grid-template-columns: 45% 55%;
-  gap: 0;
-  align-items: center;
   max-width: 1200px;
   width: 100%;
   position: relative;
-  z-index: 3;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-start;
 
   @media (max-width: 960px) {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-}
-
-.hero-bg {
-  position: absolute; inset: 0; pointer-events: none;
-}
-
-.hero-grid-dots {
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba($color-text-muted, 0.06) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.hero-orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(150px);
-
-  &.orb-1 {
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba($color-accent-secondary, 0.15), transparent 70%);
-    top: -200px; right: 5%;
-  }
-  &.orb-2 {
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(232, 168, 56, 0.08), transparent 70%);
-    bottom: -100px; left: 20%;
-  }
-}
-
-// — Decorative Elements (depth plane 3) —
-.hero-deco {
-  position: absolute;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.deco-line-1 {
-  width: 280px; height: 280px;
-  border: 1px solid rgba($color-accent-secondary, 0.08);
-  border-radius: 50%;
-  top: 15%; left: 30%;
-}
-
-.deco-line-2 {
-  width: 180px; height: 180px;
-  border: 1px solid rgba($color-accent-primary, 0.06);
-  border-radius: 50%;
-  top: 25%; right: 15%;
-}
-
-.deco-star {
-  font-size: 0.65rem;
-  color: rgba($color-accent-primary, 0.18);
-  animation: twinkle 4s ease-in-out infinite;
-
-  &.star-1 { top: 18%; left: 12%; animation-delay: 0s; }
-  &.star-2 { top: 30%; left: 42%; animation-delay: 1.2s; color: rgba($color-accent-secondary, 0.15); }
-  &.star-3 { top: 12%; right: 25%; animation-delay: 2s; font-size: 0.5rem; }
-  &.star-4 { bottom: 30%; left: 35%; animation-delay: 0.7s; color: rgba(232, 168, 56, 0.2); }
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
-
-.deco-dot {
-  border-radius: 50%;
-
-  &.dot-1 {
-    width: 4px; height: 4px;
-    background: rgba($color-accent-secondary, 0.2);
-    top: 22%; left: 48%;
-  }
-  &.dot-2 {
-    width: 3px; height: 3px;
-    background: rgba($color-accent-primary, 0.15);
-    top: 40%; left: 25%;
-  }
-  &.dot-3 {
-    width: 5px; height: 5px;
-    background: rgba(232, 168, 56, 0.15);
-    bottom: 25%; right: 30%;
-  }
-}
-
-.deco-halo {
-  border-radius: 50%;
-  border: 1px solid transparent;
-
-  &.halo-1 {
-    width: 120px; height: 120px;
-    background: radial-gradient(circle, rgba($color-accent-secondary, 0.04), transparent 70%);
-    top: 35%; left: 8%;
-  }
-  &.halo-2 {
-    width: 80px; height: 80px;
-    background: radial-gradient(circle, rgba(232, 168, 56, 0.05), transparent 70%);
-    top: 20%; right: 35%;
-  }
-}
-
-// — SVG Path (connects CTA to illustration) —
-.hero-path {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 60%;
-  z-index: 2;
-  pointer-events: none;
-
-  svg {
-    width: 100%;
-    height: 100%;
+    justify-content: center;
   }
 }
 
@@ -543,87 +452,7 @@
   background: $color-border-default;
 }
 
-// — Hero Visual (55% column, illustration as focal point) —
-.hero-visual {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 3;
-  margin-right: -100px;
-  margin-top: -40px;
 
-  @media (max-width: 960px) {
-    margin-right: 0;
-    margin-top: 40px;
-  }
-}
-
-.hero-illustration {
-  width: 130%;
-  max-width: 750px;
-  height: auto;
-  object-fit: contain;
-  position: relative;
-  -webkit-mask-image: radial-gradient(ellipse 85% 80% at 45% 50%, black 50%, transparent 100%);
-  mask-image: radial-gradient(ellipse 85% 80% at 45% 50%, black 50%, transparent 100%);
-
-  @media (max-width: 960px) {
-    width: 100%;
-    max-width: 450px;
-    -webkit-mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, black 55%, transparent 100%);
-    mask-image: radial-gradient(ellipse 90% 85% at 50% 50%, black 55%, transparent 100%);
-  }
-}
-
-// Floating UI cards
-.hero-float {
-  position: absolute; z-index: 3;
-
-  &.float-1 { top: 22%; left: 5%; }
-  &.float-2 { top: 30%; right: 4%; }
-  &.float-3 { bottom: 15%; right: 12%; }
-
-  @media (max-width: 1100px) { display: none; }
-}
-
-.float-card {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 20px;
-  background: rgba(white, 0.92);
-  backdrop-filter: blur(20px);
-  border-radius: $radius-md;
-  border: 1px solid $color-border-subtle;
-  box-shadow: $shadow-md;
-  animation: floatBounce 6s ease-in-out infinite;
-
-  .fc-icon { font-size: 1.6rem; }
-  .fc-title { font-size: 0.82rem; font-weight: 700; color: $color-text-primary; display: block; }
-  .fc-subtitle { font-size: 0.72rem; color: $color-text-muted; display: block; }
-
-  .fc-bar {
-    width: 100px; height: 5px;
-    background: $color-bg-tertiary; border-radius: 4px;
-    margin-top: 4px; overflow: hidden;
-  }
-  .fc-bar-fill {
-    height: 100%; background: $color-accent-primary;
-    border-radius: 4px;
-    animation: barGrow 2s ease forwards 1s;
-  }
-}
-
-.float-2 .float-card { animation-delay: -2s; }
-.float-3 .float-card { animation-delay: -4s; }
-
-@keyframes floatBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes barGrow {
-  from { width: 0; }
-}
 
 // ═══════════════════════════════
 // DNA SECTION
