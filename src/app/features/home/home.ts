@@ -72,22 +72,7 @@ import { RouterLink } from '@angular/router';
               </a>
             </div>
 
-            <div class="hero-trust">
-              <div class="trust-metric">
-                <span class="metric-number counter" data-target="23">23</span>
-                <span class="metric-label">Módulos clínicos</span>
-              </div>
-              <div class="trust-divider"></div>
-              <div class="trust-metric">
-                <span class="metric-number">100%</span>
-                <span class="metric-label">Web, sin instalar</span>
-              </div>
-              <div class="trust-divider"></div>
-              <div class="trust-metric">
-                <span class="metric-number">24/7</span>
-                <span class="metric-label">Acceso seguro</span>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
