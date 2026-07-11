@@ -431,16 +431,31 @@
 
 // Trust metrics
 .hero-trust {
-  display: flex; align-items: center;
-  gap: 28px; flex-wrap: wrap; margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+  padding: 14px 28px;
+  background: rgba($color-bg-primary, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba($color-accent-primary, 0.08);
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  width: fit-content;
 
   @media (max-width: 960px) {
     justify-content: center;
+    margin: 2.5rem auto 0;
   }
 }
 
 .trust-metric {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .metric-number {
@@ -450,14 +465,16 @@
 }
 
 .metric-label {
-  font-size: 0.78rem; font-weight: 600;
-  color: $color-text-muted; text-transform: uppercase;
+  font-size: 0.78rem; font-weight: 700;
+  color: $color-text-secondary; // Changed from muted to secondary for high contrast
+  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .trust-divider {
-  width: 1px; height: 36px;
-  background: $color-border-default;
+  width: 1px;
+  height: 36px;
+  background: rgba($color-accent-primary, 0.15); // Slightly darker divider
 }
 
 
