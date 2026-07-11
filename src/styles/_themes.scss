@@ -1,0 +1,188 @@
+// ═══════════════════════════════════════════
+// PsicoRuta — Themes (Glassmorphism & Depth)
+// ═══════════════════════════════════════════
+// Palette: Cream · Deep Blue · Sky Blue · Emerald Green
+
+.theme-light {
+  --bg-primary:      #f4f1ec;   // Cream (brand)
+  --bg-secondary:    #EBE7E0;   // Arena suave
+  --bg-tertiary:     #E2DDD5;
+  --bg-hover:        #D9D4CB;
+  --surface-raised:  rgba(244, 241, 236, 0.88);
+  --surface-glass:   rgba(235, 231, 224, 0.72);
+  --surface-secondary: #EBE7E0;
+  --text-primary:    #084983;   // Deep Blue
+  --text-secondary:  #3A6A8E;
+  --text-muted:      #8AACC0;
+  --border-subtle:   rgba(8, 73, 131, 0.06);
+  --border-default:  rgba(8, 73, 131, 0.10);
+  --accent-primary:  #084983;   // Deep Blue
+  --accent-primary-dark: #063A69;
+  --accent-secondary: #009fe3;  // Sky Blue
+  --accent-warm:     #22d577;   // Emerald Green
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+}
+
+// ═══════════════════════════════════════════
+// Dark Theme — Deep Blue Dark
+// ═══════════════════════════════════════════
+.theme-dark {
+  --bg-primary:      #0A1A2E;
+  --bg-secondary:    #0F2340;
+  --bg-tertiary:     #142C52;
+  --bg-hover:        #1A3564;
+  --surface-raised:  rgba(15, 35, 64, 0.92);
+  --surface-glass:   rgba(10, 26, 46, 0.85);
+  --surface-secondary: #0F2340;
+  --text-primary:    #E8EDF2;
+  --text-secondary:  #A0B8D0;
+  --text-muted:      #5A7B9A;
+  --border-subtle:   rgba(255, 255, 255, 0.06);
+  --border-default:  rgba(255, 255, 255, 0.09);
+  --accent-primary:  #33B2E8;   // Sky Blue claro (dark mode)
+  --accent-primary-dark: #009fe3;
+  --accent-secondary: #5BE098;  // Green claro (dark mode)
+  --accent-warm:     #5BE098;
+  --shadow-color:    rgba(0, 0, 0, 0.4);
+
+  body {
+    background-color: #0A1A2E;
+    color: #E8EDF2;
+  }
+
+  // ── Backgrounds ──────────────────────────
+  .welcome-page,
+  .desktop-shell,
+  .mobile-shell,
+  .admin-page {
+    background: #0A1A2E !important;
+  }
+
+  // ── Cards & Panels (Glass dark) ──────────
+  .welcome-card,
+  .form-card,
+  .chart-section,
+  .table-wrap,
+  .dollar-card,
+  .portfolio-card,
+  .inv-detail-card,
+  .summary-card,
+  .kpi-item,
+  .goal-snap,
+  .ring-card,
+  .chart-card,
+  .wins-card,
+  .dashboard-card,
+  .onboarding-card,
+  .settings-section,
+  .about-card,
+  .login-card {
+    background: rgba(15, 35, 64, 0.85) !important;
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    color: #E8EDF2;
+  }
+
+  // ── Sidebar & Topbar ─────────────────────
+  .sidebar {
+    background: rgba(15, 35, 64, 0.92) !important;
+    backdrop-filter: blur(20px);
+    border-color: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .topbar {
+    background: rgba(10, 26, 46, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(20px);
+  }
+
+  // ── Navigation ───────────────────────────
+  .nav-section-title { color: #5A7B9A !important; }
+  .nav-item {
+    color: #A0B8D0 !important;
+    &:hover, &.active { background: #142C52 !important; color: #E8EDF2 !important; }
+  }
+  .nav-item.active .nav-icon,
+  .nav-item:hover .nav-icon {
+    color: var(--accent-primary) !important;
+  }
+
+  .page-title, .logo-text { color: #E8EDF2 !important; }
+  .user-pill { color: #A0B8D0 !important; &:hover { background: #142C52 !important; } }
+
+  h1, h2, h3, h4 { color: #E8EDF2 !important; }
+  p, span, label { color: #A0B8D0; }
+
+  // ── Inputs ───────────────────────────────
+  input, select, textarea {
+    background: rgba(10, 26, 46, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: #E8EDF2 !important;
+
+    &::placeholder { color: #5A7B9A !important; }
+    &:focus {
+      border-color: #33B2E8 !important;
+      box-shadow: 0 0 0 3px rgba(51, 178, 232, 0.15) !important;
+    }
+  }
+
+  // ── Tables ───────────────────────────────
+  .data-table {
+    th { background: #142C52 !important; color: #5A7B9A !important; border-color: rgba(255, 255, 255, 0.06) !important; }
+    td { border-color: rgba(255, 255, 255, 0.04) !important; color: #A0B8D0 !important; }
+    tr:hover td { background: #0F2340 !important; }
+  }
+
+  // ── Misc ─────────────────────────────────
+  .main-content { background: #0A1A2E !important; }
+  .content-area { background: #0A1A2E !important; }
+  .search-panel { background: rgba(15, 35, 64, 0.9) !important; border-color: rgba(255, 255, 255, 0.06) !important; }
+  .search-bar { background: #142C52 !important; }
+  .search-input { color: #E8EDF2 !important; }
+  .notification-panel { background: rgba(15, 35, 64, 0.92) !important; border-color: rgba(255, 255, 255, 0.06) !important; }
+
+  .empty, .empty-small { color: #5A7B9A !important; }
+  .card-footer, .tagline, .subtitle { color: #5A7B9A !important; }
+  .card-top-bar { opacity: 0.7; }
+  .bg-orb { opacity: 0.08; }
+
+  // ── Tabs ─────────────────────────────────
+  .tabs { background: #142C52 !important; }
+  .tab {
+    color: #5A7B9A !important;
+    &.active { background: #0A1A2E !important; color: #E8EDF2 !important; }
+  }
+
+  // ── Buttons ──────────────────────────────
+  .btn-delete:hover { background: rgba(192, 96, 96, 0.12) !important; }
+  .btn-refresh { background: #0F2340 !important; border-color: rgba(255, 255, 255, 0.08) !important; color: #A0B8D0 !important; }
+
+  .filter-bar select { background: #0F2340 !important; border-color: rgba(255, 255, 255, 0.08) !important; color: #A0B8D0 !important; }
+
+  .company-tag { background: rgba(51, 178, 232, 0.12) !important; }
+  .mono { color: #E8EDF2 !important; }
+  .bold { color: #E8EDF2 !important; }
+
+  // ── Scrollbar ────────────────────────────
+  ::-webkit-scrollbar-track { background: #0A1A2E; }
+  ::-webkit-scrollbar-thumb { background: #1A3564; &:hover { background: #254076; } }
+
+  // ── Brand Logos (Dark Mode) ──────────────
+  // The color logos have deep blue text which blends into dark backgrounds.
+  // Apply a brightness filter to make them light/visible.
+  .sidebar-logo-full,
+  .sidebar-logo-icon,
+  .nav-brand-logo,
+  .footer-brand-logo,
+  .login-brand-logo,
+  .welcome-brand-logo,
+  .mobile-logo {
+    filter: brightness(0) invert(1);
+    opacity: 0.92;
+  }
+}

@@ -1,0 +1,131 @@
+name: Deploy PsicoRuta — Two-Tier Architecture
+
+on:
+  push:
+    branches:
+      - main
+
+# ═══════════════════════════════════════════════════════════════
+# ARQUITECTURA DE RUNNERS:
+#
+#   VPS 1 (Frontend) → Runner con label: "frontend"
+#   VPS 2 (Backend)  → Runner con label: "backend"
+#
+#   Cada job usa runs-on con el label correspondiente para que
+#   GitHub Actions envíe el trabajo a la máquina correcta.
+# ═══════════════════════════════════════════════════════════════
+
+jobs:
+  # ═══════════════════════════════════════════════════
+  # JOB 1: Build Angular + Deploy en VPS 1
+  # Se ejecuta en el runner instalado en el VPS Frontend
+  # ═══════════════════════════════════════════════════
+  deploy_frontend:
+    name: 🖥️ Build & Deploy Frontend
+    runs-on: [self-hosted, frontend]
+
+    steps:
+      - name: 📥 Checkout del código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 📦 Instalar dependencias Angular
+        run: npm ci
+
+      - name: 🚀 Build producción
+        run: npx ng build --configuration production
+
+      - name: 📂 Copiar build al directorio web
+        run: |
+          sudo mkdir -p /var/www/psicoruta.com/dist/browser
+          sudo rm -rf /var/www/psicoruta.com/dist/browser/*
+          sudo cp -r dist/psicoruta-app/browser/* /var/www/psicoruta.com/dist/browser/
+          sudo chmod -R 755 /var/www/psicoruta.com/dist
+          echo "✅ Build copiado a /var/www/psicoruta.com/dist/browser/"
+
+      - name: ⚡ Configurar Nginx
+        run: |
+          sudo cp nginx/frontend.conf /etc/nginx/sites-available/psicoruta.com
+
+          if [ ! -L /etc/nginx/sites-enabled/psicoruta.com ]; then
+            sudo ln -s /etc/nginx/sites-available/psicoruta.com /etc/nginx/sites-enabled/
+          fi
+
+          if sudo nginx -t 2>&1; then
+            sudo systemctl reload nginx
+            echo "✅ Nginx frontend recargado"
+          else
+            echo "❌ Error en config Nginx"
+            exit 1
+          fi
+
+  # ═══════════════════════════════════════════════════
+  # JOB 2: Deploy Backend en VPS 2
+  # Se ejecuta en el runner instalado en el VPS Backend
+  # ═══════════════════════════════════════════════════
+  deploy_backend:
+    name: 🟢 Deploy Backend
+    runs-on: [self-hosted, backend]
+
+    steps:
+      - name: 📥 Checkout del código
+        uses: actions/checkout@v4
+
+      - name: 📂 Sincronizar archivos backend
+        run: |
+          sudo mkdir -p /var/www/psicoruta-backend
+
+          # Copiar backend sin pisar .env ni node_modules
+          rsync -av --delete \
+            --exclude='node_modules' \
+            --exclude='.env' \
+            backend/ /var/www/psicoruta-backend/
+
+          sudo chmod -R 755 /var/www/psicoruta-backend
+          echo "✅ Archivos sincronizados"
+
+      - name: 📦 Instalar dependencias
+        run: |
+          cd /var/www/psicoruta-backend
+          npm install --production
+
+      - name: 🔄 Reiniciar con PM2
+        run: |
+          cd /var/www/psicoruta-backend
+
+          # Reiniciar si ya existe, sino iniciar
+          pm2 restart psicoruta-backend 2>/dev/null || \
+          pm2 start ecosystem.config.js
+
+          pm2 save
+          echo "✅ Backend reiniciado"
+
+      - name: ⚡ Configurar Nginx
+        run: |
+          sudo cp nginx/backend.conf /etc/nginx/sites-available/api.psicoruta.com
+
+          if [ ! -L /etc/nginx/sites-enabled/api.psicoruta.com ]; then
+            sudo ln -s /etc/nginx/sites-available/api.psicoruta.com /etc/nginx/sites-enabled/
+          fi
+
+          if sudo nginx -t 2>&1; then
+            sudo systemctl reload nginx
+            echo "✅ Nginx backend recargado"
+          else
+            echo "❌ Error en config Nginx"
+            exit 1
+          fi
+
+      - name: ✅ Health Check
+        run: |
+          sleep 3
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3003/api/status || echo "000")
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ Backend respondiendo correctamente"
+          else
+            echo "⚠️ Backend respondió $STATUS — revisar: pm2 logs psicoruta-backend"
+          fi

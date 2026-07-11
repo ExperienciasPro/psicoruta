@@ -1,0 +1,101 @@
+// ═══════════════════════════════════════════
+// PsicoRuta — Design Tokens (Brand Identity)
+// ═══════════════════════════════════════════
+// Aesthetic: Glassmorphism · Negative Space · Cognitive Ease
+// Palette: Cream · Deep Blue · Sky Blue · Emerald Green
+
+// ─── Color Palette: PsicoRuta Brand ────────────────
+// Professional, clinical, trustworthy
+
+// Base – Warm Neutrals (70% de la interfaz)
+$color-bg-primary:     #f4f1ec;          // Cream — fondo general (brand)
+$color-bg-secondary:   #EBE7E0;          // Arena suave — cards, paneles
+$color-bg-tertiary:    #E2DDD5;          // Arena profunda — superficies elevadas
+$color-bg-hover:       #D9D4CB;          // Hover cálido
+$color-bg-active:      #D0CAC0;          // Active state
+
+// Surface — Glass layers
+$color-surface-raised:  rgba(244, 241, 236, 0.88); // Sidebar, topbar
+$color-surface-overlay: rgba(8, 73, 131, 0.35);    // Modal backdrop
+$color-surface-glass:   rgba(235, 231, 224, 0.72); // Glass panels
+
+// Accent — Brand Colors
+$color-accent-primary:       #084983;     // Deep Blue — botones principales, navegación activa
+$color-accent-primary-light: #0A5FA8;     // Deep Blue claro
+$color-accent-primary-dark:  #063A69;     // Deep Blue oscuro
+$color-accent-primary-glow:  rgba(8, 73, 131, 0.15);
+
+$color-accent-secondary:       #009fe3;   // Sky Blue — acentos, badges, links
+$color-accent-secondary-light: #33B2E8;
+$color-accent-secondary-dark:  #0080B8;
+
+$color-accent-warm:    #22d577;           // Emerald Green (brand green)
+$color-accent-danger:  #C06060;           // Rojo orgánico — errores
+$color-accent-warning: #E8A838;           // Ámbar cálido — advertencias
+$color-accent-info:    #009fe3;           // Sky Blue — info
+$color-accent-success: #22d577;           // Green — éxito/progreso
+
+// Text — Deep Blue como protagonista
+$color-text-primary:   #084983;           // Deep Blue — encabezados y textos
+$color-text-secondary: #3A6A8E;           // Blue atenuado
+$color-text-muted:     #8AACC0;           // Blue niebla
+$color-text-inverse:   #f4f1ec;           // Texto sobre fondos oscuros
+$color-text-accent:    $color-accent-primary;
+
+// Borders — Whisper-thin, barely there
+$color-border-subtle:  rgba(8, 73, 131, 0.06);
+$color-border-default: rgba(8, 73, 131, 0.10);
+$color-border-strong:  rgba(8, 73, 131, 0.16);
+$color-border-accent:  rgba(8, 73, 131, 0.25);
+
+// ─── Spacing Scale (Generous / Negative Space) ──────
+$spacing-xs:  6px;
+$spacing-sm:  12px;
+$spacing-md:  20px;
+$spacing-lg:  32px;
+$spacing-xl:  48px;
+$spacing-2xl: 64px;
+$spacing-3xl: 96px;
+
+// ─── Border Radius (Amable, mínimo 20px) ────────────
+$radius-sm:   12px;
+$radius-md:   20px;
+$radius-lg:   28px;
+$radius-xl:   36px;
+$radius-full: 9999px;
+
+// ─── Breakpoints ────────────────────────────────────
+$bp-mobile:  480px;
+$bp-tablet:  768px;
+$bp-desktop: 1024px;
+$bp-wide:    1440px;
+
+// ─── Layout Dimensions ─────────────────────────────
+$sidebar-width:    280px;
+$sidebar-collapsed: 80px;
+$topbar-height:    68px;
+$bottom-nav-height: 72px;
+
+// ─── Transitions (Organic, ease-in-out) ─────────────
+$transition-fast:   180ms ease-in-out;
+$transition-base:   320ms cubic-bezier(0.25, 0.1, 0.25, 1);
+$transition-slow:   500ms cubic-bezier(0.25, 0.1, 0.25, 1);
+$transition-spring: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// ─── Shadows (Soft only — Floating, calm) ───────────
+// Prohibido sombras duras. Solo soft shadows de gran radio.
+$shadow-sm:  0 2px 12px rgba(8, 73, 131, 0.04);
+$shadow-md:  0 8px 24px rgba(8, 73, 131, 0.05);
+$shadow-lg:  0 16px 40px rgba(8, 73, 131, 0.06);
+$shadow-xl:  0 24px 56px rgba(8, 73, 131, 0.07);
+$shadow-glow-primary: 0 0 32px rgba(8, 73, 131, 0.12);
+$shadow-glow-success: 0 0 32px rgba(34, 213, 119, 0.18);
+$shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+// ─── Z-Index Scale ──────────────────────────────────
+$z-dropdown:       100;
+$z-sticky:         200;
+$z-sidebar:        250;
+$z-modal-backdrop: 300;
+$z-modal:          400;
+$z-toast:          500;

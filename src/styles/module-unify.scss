@@ -1,0 +1,237 @@
+// ═══════════════════════════════════════════════════════════
+// MODULE UNIFIER - PsicoRuta Brand Style Override
+// Ensures all ported modules (Testea) match PsicoRuta's design
+// ═══════════════════════════════════════════════════════════
+
+// ─── Override inline style="#6c3ce9" buttons ──
+[style*="background: #6c3ce9"],
+[style*="background-color: #6c3ce9"] {
+  background: var(--accent-primary, #084983) !important;
+  box-shadow: 0 4px 16px rgba(8, 73, 131, 0.3) !important;
+  border-radius: 12px !important;
+}
+
+[style*="color: #6c3ce9"] {
+  color: var(--accent-primary, #084983) !important;
+}
+
+[style*="border: 1px dashed #6c3ce9"] {
+  border-color: var(--accent-primary, #084983) !important;
+}
+
+[style*="color: #1e293b"],
+[style*="color:#1e293b"] {
+  color: var(--text-primary, #084983) !important;
+}
+
+[style*="color: #64748b"],
+[style*="color:#64748b"] {
+  color: var(--text-secondary, #3A6A8E) !important;
+}
+
+// Override any inline border-bottom with hard colors
+[style*="border-bottom: 2px solid #e2e8f0"] {
+  border-bottom-color: var(--border-default, rgba(0,0,0,0.06)) !important;
+}
+
+// ─── Page Headers ───────────────────────────────────
+app-admin-formularios,
+app-tests,
+app-admin-resultados,
+app-admin-dashboards,
+app-admin-entrenamientos {
+
+  // Force brand color tokens everywhere
+  * {
+    --color-primario: var(--accent-primary, #084983);
+    --color-secundario: var(--text-primary, #084983);
+    --color-texto-principal: var(--text-primary, #084983);
+    --color-texto-suave: var(--text-secondary, #3A6A8E);
+  }
+
+  // Override hard-coded purple (#6c3ce9) backgrounds with accent-primary
+  .btn-primary,
+  .btn-pill-blue,
+  [style*="background: #6c3ce9"],
+  [style*="background-color: #6c3ce9"] {
+    background: var(--accent-primary, #084983) !important;
+    box-shadow: 0 4px 16px rgba(8, 73, 131, 0.3) !important;
+    border-radius: 12px !important;
+  }
+
+  // Override toggle active state
+  .toggle-btn.activo {
+    background-color: var(--accent-primary, #084983) !important;
+    box-shadow: 0 2px 8px rgba(8, 73, 131, 0.25) !important;
+  }
+
+  .toggle-btn:hover {
+    color: var(--accent-primary) !important;
+  }
+
+  // Override search buttons
+  .search-btn {
+    background: var(--accent-primary, #084983) !important;
+    &:hover { background: var(--accent-secondary, #009fe3) !important; }
+  }
+
+  // Softer cards — warm backgrounds instead of pure white
+  .test-card,
+  .control-card {
+    background: var(--bg-secondary, #EBE7E0) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .test-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  // Gradient banners → PsicoRuta brand tones
+  .card-banner.bg-teal,
+  .card-banner.bg-blue {
+    background: linear-gradient(135deg, var(--accent-primary, #084983), var(--accent-secondary, #009fe3)) !important;
+  }
+
+  .card-banner.bg-navy {
+    background: linear-gradient(135deg, var(--text-primary, #084983), var(--text-secondary, #3A6A8E)) !important;
+  }
+
+  .card-banner.bg-orange {
+    background: linear-gradient(135deg, var(--accent-secondary, #009fe3), #5BBDE8) !important;
+  }
+
+  // Softer inputs
+  .search-input,
+  .form-input,
+  input[type="text"],
+  select,
+  textarea {
+    background: var(--bg-primary, #f4f1ec) !important;
+    border-color: var(--border-default, rgba(0,0,0,0.06)) !important;
+    border-radius: 12px !important;
+
+    &:focus {
+      border-color: var(--accent-primary, #084983) !important;
+      box-shadow: 0 0 0 3px rgba(8, 73, 131, 0.12) !important;
+    }
+  }
+
+  // View toggle container
+  .view-toggles {
+    background: var(--bg-secondary, #EBE7E0) !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    padding: 3px !important;
+  }
+
+  // Tags
+  .tag {
+    background: var(--bg-primary, #f4f1ec) !important;
+    border-color: var(--border-default, rgba(0,0,0,0.06)) !important;
+    color: var(--text-secondary) !important;
+    border-radius: 8px !important;
+  }
+
+  // Toolbox
+  .toolbox {
+    background: var(--bg-secondary, #EBE7E0) !important;
+    border-radius: 18px !important;
+  }
+
+  .tool-btn {
+    background: var(--bg-primary, #f4f1ec) !important;
+    border-color: var(--border-default, rgba(0,0,0,0.06)) !important;
+    border-radius: 12px !important;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    }
+  }
+
+  .tool-icon {
+    background: rgba(8, 73, 131, 0.12) !important;
+    color: var(--accent-primary) !important;
+    border-radius: 8px !important;
+  }
+
+  // Canvas area
+  .canvas-area {
+    border-color: var(--border-default, rgba(0,0,0,0.08)) !important;
+    background: var(--bg-primary, #f4f1ec) !important;
+    border-radius: 18px !important;
+  }
+
+  // Modal
+  .modal-overlay {
+    background: rgba(8, 73, 131, 0.3) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content,
+  .side-panel {
+    background: var(--bg-primary, #f4f1ec) !important;
+    border-radius: 20px !important;
+  }
+
+  // Cancel / secondary buttons
+  .btn-cancelar,
+  .btn-sec-gray {
+    background: transparent !important;
+    border-color: var(--border-default) !important;
+    color: var(--text-secondary) !important;
+    border-radius: 12px !important;
+
+    &:hover {
+      background: var(--bg-secondary, #EBE7E0) !important;
+    }
+  }
+
+  // Primary action buttons
+  .btn-guardar,
+  .btn-save {
+    background: var(--accent-primary, #084983) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(8, 73, 131, 0.3) !important;
+  }
+
+  // Page headers
+  header h1,
+  .page-title,
+  .panel-title,
+  .builder-header h1 {
+    font-family: 'Outfit', sans-serif !important;
+    color: var(--text-primary, #084983) !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  header p,
+  .page-desc,
+  .panel-desc {
+    color: var(--text-secondary, #3A6A8E) !important;
+  }
+
+  // Fix pill buttons to square-ish
+  .btn-pill-blue,
+  .btn-sec-gray {
+    border-radius: 12px !important;
+  }
+
+  // Action circles
+  .action-circle {
+    background: var(--bg-primary) !important;
+    &:hover { background: var(--bg-secondary) !important; }
+  }
+
+  .text-blue:hover { color: var(--accent-primary) !important; background: rgba(8, 73, 131, 0.1) !important; }
+  .text-teal:hover { color: var(--accent-primary) !important; background: rgba(8, 73, 131, 0.1) !important; }
+}
+
+// ─── Clinica Analytics ───────────────────────────────
+app-clinica-analytics {
+  * {
+    --color-primario: var(--accent-primary, #084983);
+    --color-secundario: var(--text-primary, #084983);
+  }
+}

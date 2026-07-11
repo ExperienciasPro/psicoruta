@@ -1,0 +1,61 @@
+<!-- CONTENEDOR DE LA INTERACCIÓN -->
+<div class="interaction-container">
+
+    <!-- A: PREGUNTAS DICOTÓMICAS O MÚLTIPLES (Botones Grandotes para móvil) -->
+    <ng-container *ngIf="interactionType() === 'multiple'">
+        <div class="multiple-choice-grid">
+            <button *ngFor="let edge of availableEdges" class="choice-btn" (click)="submitMultiple(edge.id)">
+                <span class="choice-text">{{ edge.selectionCondition || 'Continuar' }}</span>
+                <span class="choice-icon">→</span>
+            </button>
+        </div>
+    </ng-container>
+
+    <!-- B: ORDENAMIENTO (Drag & Drop en Lista Mobile-friendly) -->
+    <ng-container *ngIf="interactionType() === 'ordenamiento'">
+        <div class="sortable-list" cdkDropList (cdkDropListDropped)="onDrop($event)">
+            <div *ngFor="let item of sortableItems(); let i = index" class="sortable-item" cdkDrag>
+                <div class="drag-handle" cdkDragHandle>☰</div>
+                <div class="sort-rank">{{ i + 1 }}</div>
+                <div class="sort-label">{{ item.label }}</div>
+            </div>
+        </div>
+        <button class="action-btn mt-4" (click)="submitSortable()">Confirmar Prioridades</button>
+    </ng-container>
+
+    <!-- C: DISTRIBUCIÓN DE RECURSOS (Sliders Interconectados) -->
+    <ng-container *ngIf="interactionType() === 'distribucion'">
+
+        <div class="resources-hud">
+            <div class="hud-item">
+                <span>Presupuesto</span>
+                <strong>K$ {{ maxResources() }}</strong>
+            </div>
+            <div class="hud-item" [class.danger]="remainingResources() < 0">
+                <span>Restante</span>
+                <strong>K$ {{ remainingResources() }}</strong>
+            </div>
+        </div>
+
+        <div class="distribution-list">
+            <div class="distri-item" *ngFor="let res of resourceAllocations()">
+                <div class="distri-header">
+                    <label>{{ res.label }}</label>
+                    <span class="value-readout">K$ {{ res.amount }}</span>
+                </div>
+
+                <input type="range" class="range-slider" min="0" [max]="maxResources()" [value]="res.amount"
+                    (input)="onSliderChange(res.id, $event)">
+                <!-- Tick marks opcionales o barra de progreso CSS -->
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" [style.width.%]="(res.amount / maxResources()) * 100"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="action-btn mt-4 w-full" [disabled]="remainingResources() < 0" (click)="submitDistribution()">
+            Ejecutar Inversión
+        </button>
+    </ng-container>
+
+</div>

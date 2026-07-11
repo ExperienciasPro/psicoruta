@@ -1,0 +1,182 @@
+<aside class="panel-container">
+    <!-- TITLE -->
+    <header class="panel-header">
+        <h3 *ngIf="selectedType === 'node'">Configuración del Nodo</h3>
+        <h3 *ngIf="selectedType === 'edge'">Configuración de Arista (Conexión)</h3>
+    </header>
+
+    <div class="panel-content">
+
+        <!-- ==================== GLOBAL ==================== -->
+        <ng-container *ngIf="selectedType === 'global' && globalConfig">
+
+            <div class="form-group">
+                <label>Modo de Retroalimentación</label>
+                <select [(ngModel)]="globalConfig.feedbackMode" (change)="saveGlobal()">
+                    <option value="formativo">Formativo (Durante Simulación)</option>
+                    <option value="sumativo">Sumativo (Al Finalizar)</option>
+                </select>
+                <small>El modo formativo revela el impacto en variables de inmediato.</small>
+            </div>
+
+            <div class="form-group">
+                <label>Temporizador Global (Segmentos)</label>
+                <input type="number" [(ngModel)]="globalConfig.globalTimer" (change)="saveGlobal()">
+            </div>
+
+            <div class="form-group">
+                <label>Complejidad / Etiquetas</label>
+                <input type="text" [(ngModel)]="globalConfig.complexity" (change)="saveGlobal()"
+                    placeholder="Ej: Alta, Fácil, Ventas">
+            </div>
+
+            <div class="form-group">
+                <label>Competencias a Evaluar</label>
+                <div class="tags-container" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;"
+                    *ngIf="globalConfig.competencias?.length">
+                    <span class="tag" *ngFor="let comp of globalConfig.competencias; let idx = index"
+                        style="background:#f1f5f9; padding:4px 8px; border-radius:12px; font-size:12px; display:inline-flex; align-items:center; gap:6px; border:1px solid #cbd5e1;">
+                        {{ comp }}
+                        <button (click)="removeCompetencia(idx)"
+                            style="background:transparent; border:none; cursor:pointer; color:#ef4444; font-weight:bold; padding:0; display:flex; align-items:center;">&times;</button>
+                    </span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" [(ngModel)]="newCompetencia" placeholder="Ej: Pensamiento analítico"
+                        (keyup.enter)="addCompetencia()" style="flex:1;">
+                    <button class="btn-add-option" (click)="addCompetencia()"
+                        style="background:#3b82f6; color:white; border:none; padding:8px 12px; border-radius:4px; font-size:13px; font-weight:600; cursor:pointer;">Añadir</button>
+                </div>
+            </div>
+
+        </ng-container>
+
+        <!-- ==================== NODE ==================== -->
+        <ng-container *ngIf="selectedType === 'node' && node">
+
+            <div class="form-group">
+                <label>Tipo de Nodo</label>
+                <select [(ngModel)]="node.type" (change)="saveNode()">
+                    <option value="pregunta">Pregunta / Interacción</option>
+                    <option value="decision-cajas">Decisión Múltiple (Cajas/Checkboxes)</option>
+                    <option value="decision-lista">Decisión (Lista Desplegable)</option>
+                    <option value="multimedia">Contenido Multimedia</option>
+                    <option value="final">Resolución Final (Feedback)</option>
+                </select>
+            </div>
+
+            <!-- RENDERIZADO CONDICIONAL BASADO EN TIPO DE NODO -->
+            <div [ngSwitch]="node.type">
+
+                <!-- CASO: NODO ESTÁNDAR (PREGUNTA O INTERACCIÓN) -->
+                <div *ngSwitchCase="'pregunta'">
+                    <div class="form-group">
+                        <label>Situación (Contexto)</label>
+                        <textarea rows="4" [(ngModel)]="node.content.richText" (change)="saveNode()"
+                            placeholder="El cliente está furioso..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pregunta a resolver</label>
+                        <input type="text" [(ngModel)]="node.content.preguntaText" (change)="saveNode()"
+                            placeholder="¿Cuál es tu primera acción?">
+                    </div>
+
+                    <div class="form-group options-manager">
+                        <label>Opciones de Respuesta</label>
+
+                        <div class="option-item" *ngFor="let opt of node.content.opciones; let i = index"
+                            style="display:flex; gap:8px; margin-bottom:8px;">
+                            <input type="text" [(ngModel)]="opt.texto" (change)="saveNode()" style="flex:1;">
+                            <button class="btn-remove" (click)="removeOption(i)" title="Eliminar opción"
+                                style="background:#e11d48; color:white; border:none; border-radius:4px; padding:0 8px; cursor:pointer;">&times;</button>
+                        </div>
+
+                        <div class="new-option-row mt-2" style="display:flex; flex-direction:column; gap:8px;">
+                            <input type="text" [(ngModel)]="newOptionText" placeholder="Ej. Opción A">
+                            <button class="btn-add-option" (click)="addNewOption()"
+                                style="background:#10b981; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">+
+                                Agregar Opción</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CASO: NODO FINAL DE RUTA -->
+                <div *ngSwitchCase="'final'">
+                    <div class="form-group final-feedback-box">
+                        <label>Resultado (Ej: Fracaso Total, Éxito Parcial)</label>
+                        <input type="text" [(ngModel)]="node.content.resultado" (change)="saveNode()"
+                            placeholder="Ej: Fracaso Total">
+
+                        <label style="margin-top: 12px; display: block;">Puntaje Obtenido</label>
+                        <input type="number" [(ngModel)]="node.content.puntajeObtenido" (change)="saveNode()"
+                            placeholder="Ej: 0, 50, 100">
+
+                        <label style="margin-top: 12px; display: block;">Retroalimentación Detallada</label>
+                        <textarea rows="6" [(ngModel)]="node.content.richText" (change)="saveNode()"
+                            placeholder="Por qué fue buena o mala decisión basada en su ruta..."></textarea>
+                    </div>
+                </div>
+
+                <!-- CASO: MULTIMEDIA / OTROS -->
+                <div *ngSwitchDefault>
+                    <div class="form-group">
+                        <label>Texto Narrativo (Contexto genérico)</label>
+                        <textarea rows="4" [(ngModel)]="node.content.richText" (change)="saveNode()"
+                            placeholder="Escribe el contexto del medio..."></textarea>
+                    </div>
+                    <div class="form-group" *ngIf="node.type === 'multimedia'">
+                        <label>Multimedia URLs (Coma separated)</label>
+                        <input type="text" placeholder="https://video.mp4" (change)="saveNode()">
+                    </div>
+                </div>
+
+            </div>
+
+        </ng-container>
+
+        <!-- ==================== EDGE (CONEXIONES Y MUTACIONES) ==================== -->
+        <ng-container *ngIf="selectedType === 'edge' && edge">
+
+            <div class="form-group">
+                <label>Condición de Selección</label>
+                <input type="text" [(ngModel)]="edge.selectionCondition" (change)="saveEdge()"
+                    placeholder="Ej: 'Aceptar_Trato'">
+                <small>Identificador de la decisión tomada para activar esta arista.</small>
+            </div>
+
+            <div class="mutation-header">
+                <label>Mutaciones de Estado Oculto</label>
+                <button class="add-btn" (click)="addMutationToEdge(); saveEdge()">+ Añadir</button>
+            </div>
+
+            <div class="mutation-list">
+                <div class="mutation-card" *ngFor="let m of edge.stateMutations; let i = index">
+
+                    <select [(ngModel)]="m.variableId" (change)="saveEdge()">
+                        <option value="var_1">Presupuesto</option>
+                        <option value="var_2">Estrés General</option>
+                        <option value="var_3">Satisfacción Cliente</option>
+                    </select>
+
+                    <div class="mutation-actions">
+                        <select [(ngModel)]="m.operation" (change)="saveEdge()">
+                            <option value="add">+</option>
+                            <option value="subtract">-</option>
+                            <option value="set">=</option>
+                        </select>
+
+                        <input type="number" [(ngModel)]="m.value" (change)="saveEdge()">
+                    </div>
+
+                    <button class="remove-btn" (click)="removeMutation(i); saveEdge()">Eliminar</button>
+                </div>
+
+                <p class="empty-state" *ngIf="edge.stateMutations.length === 0">
+                    No hay efectos en variables de estado para esta conexión.
+                </p>
+            </div>
+        </ng-container>
+
+    </div>
+</aside>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!--
+    PsicoRuta Logo — Horizontal Funnel
+    Shapes enter left → Purple funnel → Organized checkmark exits right
+    Flat illustration style matching um-icon system
+  -->
+
+  <!-- === LEFT: Scattered geometric shapes entering === -->
+  <circle cx="32" cy="62" r="12" fill="#e84393"/>
+  <circle cx="22" cy="120" r="14" fill="#74b9ff"/>
+  <circle cx="52" cy="92" r="5" fill="#00cec9"/>
+  <circle cx="38" cy="140" r="4" fill="#6c5ce7" opacity="0.5"/>
+  <circle cx="58" cy="60" r="4" fill="#ddd6fe"/>
+
+  <rect x="42" y="108" width="14" height="14" rx="3" fill="#00cec9" transform="rotate(12,49,115)"/>
+  <polygon points="48,72 58,90 38,90" fill="#e84393" opacity="0.8"/>
+
+  <!-- Small dots entering the funnel -->
+  <circle cx="60" cy="78" r="3" fill="#6c5ce7" opacity="0.6"/>
+  <circle cx="55" cy="130" r="3" fill="#e84393" opacity="0.5"/>
+  <circle cx="65" cy="100" r="2.5" fill="#74b9ff" opacity="0.7"/>
+
+  <!-- === CENTER: Purple funnel (horizontal, pointing right) === -->
+  <!-- Funnel body - wider on left, narrow on right -->
+  <path d="M68,52 L68,148 L138,112 L138,88 Z" fill="#6c5ce7" opacity="0.15"/>
+  <path d="M68,52 L68,148 L138,112 L138,88 Z" fill="none" stroke="#6c5ce7" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- Inner funnel shading -->
+  <path d="M72,62 L72,138 L134,110 L134,90 Z" fill="#a29bfe" opacity="0.12"/>
+
+  <!-- Flow lines inside funnel -->
+  <line x1="78" y1="80" x2="125" y2="95" stroke="#a29bfe" stroke-width="1.5" opacity="0.35" stroke-linecap="round"/>
+  <line x1="78" y1="100" x2="130" y2="100" stroke="#a29bfe" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+  <line x1="78" y1="120" x2="125" y2="105" stroke="#a29bfe" stroke-width="1.5" opacity="0.35" stroke-linecap="round"/>
+
+  <!-- Funnel spout (narrow exit) -->
+  <rect x="138" y="92" width="14" height="16" rx="3" fill="#6c5ce7" opacity="0.15"/>
+  <rect x="138" y="92" width="14" height="16" rx="3" fill="none" stroke="#6c5ce7" stroke-width="3"/>
+
+  <!-- === RIGHT: Organized output — checkmark + lines === -->
+  <!-- Checkmark -->
+  <polyline points="158,96 164,104 178,88" fill="none" stroke="#00cec9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Organized lines (representing structured output) -->
+  <line x1="158" y1="116" x2="182" y2="116" stroke="#00cec9" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <line x1="158" y1="126" x2="176" y2="126" stroke="#00cec9" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+</svg>

@@ -1,0 +1,63 @@
+<div class="node-container" [id]="node.id" [ngClass]="node.type" (dblclick)="toggleCollapse.emit()">
+    <div class="node-header">
+        <span class="node-type-label">{{ node.id === 'n_init' ? 'Contexto Inicial' : (node.id ===
+            'node-opening-question' ? 'Pregunta de Apertura' : node.type) }}</span>
+        <div class="header-actions" style="display: flex; gap: 4px; align-items: center;">
+            <button *ngIf="node.id !== 'n_init'" class="delete-btn"
+                (click)="deleteNode.emit(); $event.stopPropagation()" title="Eliminar nodo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </button>
+            <button *ngIf="hasChildren" class="collapse-btn" (click)="toggleCollapse.emit(); $event.stopPropagation()">
+                {{ isCollapsed ? '+' : '−' }}
+            </button>
+        </div>
+    </div>
+
+    <div class="node-body">
+        <ng-container
+            *ngIf="node.type === 'pregunta' || node.type === 'decision-cajas' || node.type === 'decision-lista'">
+            <strong class="node-title" *ngIf="node.id !== 'n_init' || node.content.preguntaText"
+                style="display:block; margin-bottom:6px; font-size:14px; line-height:1.2; font-weight:700;">
+                {{ node.content.preguntaText || 'Nueva Situación...' }}
+            </strong>
+            <div class="content-preview" [innerHTML]="node.content.richText"></div>
+
+            <div *ngIf="node.content.opciones && node.content.opciones.length > 0" class="options-preview"
+                style="margin-top:8px;">
+                <span class="opt-tag" *ngFor="let opt of node.content.opciones"
+                    style="display:inline-block; font-size:11px; background:#f1f5f9; padding:2px 8px; border-radius:12px; border:1px solid #cbd5e1; margin-right:4px;">{{
+                    opt.texto }}</span>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="node.type === 'final'">
+            <strong class="node-title"
+                style="display:block; margin-bottom:6px; font-size:14.5px; line-height:1.2; font-weight:800; text-align:center;">
+                {{ node.content.resultado || 'Resultado Final' }}
+            </strong>
+            <div class="score-badge" style="text-align:center; font-size:12px; color:#475569; font-weight:600;">
+                Puntaje: {{ node.content.puntajeObtenido || 0 }}
+            </div>
+            <div class="content-preview mt-2" [innerHTML]="node.content.richText"
+                style="margin-top:8px; opacity:0.8; font-size:12px;"></div>
+        </ng-container>
+
+        <ng-container *ngIf="node.type === 'multimedia'">
+            <div class="content-preview" [innerHTML]="node.content.richText"></div>
+        </ng-container>
+
+        <div *ngIf="node.content.urls && node.content.urls.length > 0" class="multimedia-indicator">
+            Media ({{ node.content.urls.length }})
+        </div>
+    </div>
+
+    <!-- Puertos de Conexión (Drag & Drop Edges) -->
+    <div class="connection-port target-port" (mouseup)="connectEnd.emit(); $event.stopPropagation()"></div>
+    <div class="connection-port source-port" (mousedown)="connectStart.emit($event); $event.stopPropagation()">+</div>
+</div>

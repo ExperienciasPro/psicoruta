@@ -1,0 +1,103 @@
+<div class="player-layout">
+
+    <!-- ==================== HUD SUPERIOR ==================== -->
+    <header class="simulation-hud">
+        <div class="hud-left">
+            <div class="brand-badge" (click)="toggleMode()" title="Cambiar Modo">
+                Simulador Estratégico <span class="mode-tag">{{ feedbackMode() }}</span>
+            </div>
+        </div>
+
+        <!-- Indicadores de Variables Ocultas (Dinámicos) -->
+        <div class="hud-center">
+            <div class="stat-pill" *ngFor="let stat of hudVariables()" [class.warning]="stat.warning">
+                <span class="stat-label">{{ stat.label }}</span>
+                <span class="stat-val">{{ stat.value }}</span>
+            </div>
+        </div>
+
+        <div class="hud-right">
+            <div class="timer-display" [class.danger]="globalTimer() < 30">
+                ⏱ {{ formatTime(globalTimer()) }}
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de progreso minimalista (Ej. 30% width calculado por historia o depth) -->
+    <div class="progress-track">
+        <div class="progress-fill" style="width: 25%;"></div>
+    </div>
+
+
+    <!-- ==================== CONTENEDOR DE CONTEXTO (PREGUNTA/MULTIMEDIA) ==================== -->
+    <main class="context-container" *ngIf="currentNode()">
+
+        <div class="context-card scroll-hidden">
+
+            <!-- Bloque de Contenido Enriquecido (Sanitizado) -->
+            <div class="rich-text-wrapper prose" [innerHTML]="safeHtmlContent()"></div>
+
+            <!-- Renderizador Dinámico de Video Lazy Loaded -->
+            <div class="media-wrapper" *ngIf="currentNode()?.type === 'multimedia'">
+
+                <!-- Skeleton Loader -->
+                <div class="skeleton-video" *ngIf="isVideoLoading()">
+                    Cargando Media Seguro...
+                </div>
+
+                <video *ngIf="safeVideoUrl()" [src]="safeVideoUrl()" controls playsinline autoplay [muted]="false"
+                    (loadeddata)="onVideoLoaded()"></video>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ==================== MOTOR DE INTERACCIÓN (BOTTOM SHEET) ==================== -->
+    <footer class="interaction-wrapper" *ngIf="currentNode()?.type !== 'final'">
+        <!-- Opciones dinámicas cargadas según el nodo -->
+        <app-interaction-engine [node]="currentNode()!" [availableEdges]="currentEdges()"
+            (transition)="handleTransition($event)"></app-interaction-engine>
+    </footer>
+
+    <!-- Pantalla de Resultados Resolutiva Final (Reporte Sumativo Opcional) -->
+    <footer class="interaction-wrapper" *ngIf="currentNode()?.type === 'final'">
+        <div class="final-card">
+            <h3 *ngIf="feedbackMode() === 'formativo'">Simulación Concluida</h3>
+            <h3 *ngIf="feedbackMode() === 'sumativo'">Reporte de Consecuencias (Sumativo)</h3>
+
+            <!-- Reporte Gráfico Simple -->
+            <div class="summative-charts" *ngIf="feedbackMode() === 'sumativo'">
+                <div class="chart-bar-container" *ngFor="let stat of hudVariables()">
+                    <div class="chart-label">
+                        <span>{{ stat.label }}</span>
+                        <span class="chart-value">{{ stat.value }} / {{ stat.initialValue }}</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" [style.width.%]="(stat.value / stat.max) * 100"
+                            [class.critical]="stat.value <= (stat.initialValue * 0.25)"
+                            [class.positive]="stat.value >= stat.initialValue"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="retry-btn mt-4">Terminar / Volver al Inicio</button>
+        </div>
+    </footer>
+
+    <!-- ==================== ALERTA FORMATIVA INTELIGENTE (TOAST OVERLAY) ==================== -->
+    <div class="formative-overlay" *ngIf="formativeAlert() as alert">
+        <div class="formative-toast">
+            <div class="toast-icon">⚠️</div>
+            <div class="toast-content">
+                <h4>{{ alert.title }}</h4>
+                <p>{{ alert.message }}</p>
+            </div>
+            <div class="toast-actions">
+                <button class="btn-retry" (click)="retryDecision()">Reevaluar Opción</button>
+            </div>
+        </div>
+    </div>
+
+</div>
