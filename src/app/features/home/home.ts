@@ -50,9 +50,56 @@ import { RouterLink } from '@angular/router';
         <div class="hero-bg">
           <div class="hero-orb orb-1"></div>
           <div class="hero-orb orb-2"></div>
-          <div class="hero-orb orb-3"></div>
           <div class="hero-grid-dots"></div>
+          <!-- Decorative elements that cross behind text -->
+          <div class="hero-deco deco-line-1"></div>
+          <div class="hero-deco deco-line-2"></div>
+          <div class="hero-deco deco-star star-1">✦</div>
+          <div class="hero-deco deco-star star-2">✦</div>
+          <div class="hero-deco deco-star star-3">✧</div>
+          <div class="hero-deco deco-star star-4">✦</div>
+          <div class="hero-deco deco-dot dot-1"></div>
+          <div class="hero-deco deco-dot dot-2"></div>
+          <div class="hero-deco deco-dot dot-3"></div>
+          <div class="hero-deco deco-halo halo-1"></div>
+          <div class="hero-deco deco-halo halo-2"></div>
         </div>
+
+        <!-- Flowing path that connects CTA to illustration -->
+        <div class="hero-path">
+          <svg viewBox="0 0 1200 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="pathGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#009fe3" stop-opacity="0.06"/>
+                <stop offset="40%" stop-color="#084983" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#009fe3" stop-opacity="0.08"/>
+              </linearGradient>
+              <linearGradient id="pathGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#084983" stop-opacity="0.04"/>
+                <stop offset="50%" stop-color="#009fe3" stop-opacity="0.10"/>
+                <stop offset="100%" stop-color="#33B2E8" stop-opacity="0.06"/>
+              </linearGradient>
+              <linearGradient id="pathGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#33B2E8" stop-opacity="0.03"/>
+                <stop offset="60%" stop-color="#084983" stop-opacity="0.08"/>
+                <stop offset="100%" stop-color="#009fe3" stop-opacity="0.04"/>
+              </linearGradient>
+            </defs>
+            <!-- Layer 1: Wide, soft -->
+            <path d="M-50,420 C150,380 250,480 450,400 C650,320 750,360 950,300 C1050,270 1150,290 1250,260" 
+                  fill="none" stroke="url(#pathGrad3)" stroke-width="120" stroke-linecap="round"/>
+            <!-- Layer 2: Medium -->
+            <path d="M-50,440 C200,390 300,490 500,380 C700,280 800,340 1000,280 C1100,250 1200,270 1300,240" 
+                  fill="none" stroke="url(#pathGrad1)" stroke-width="70" stroke-linecap="round"/>
+            <!-- Layer 3: Thin, sharp -->
+            <path d="M-20,450 C180,400 320,500 520,390 C720,290 820,350 1020,290 C1120,260 1220,275 1300,250" 
+                  fill="none" stroke="url(#pathGrad2)" stroke-width="3" stroke-linecap="round"/>
+            <!-- Layer 4: Accent line -->
+            <path d="M50,460 C220,420 350,510 540,400 C740,300 830,355 1030,295" 
+                  fill="none" stroke="url(#pathGrad1)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="8 12"/>
+          </svg>
+        </div>
+
         <div class="hero-inner">
           <div class="hero-content reveal-left">
             <div class="hero-badge-row">
@@ -94,10 +141,9 @@ import { RouterLink } from '@angular/router';
               </div>
             </div>
           </div>
+
           <div class="hero-visual reveal-right delay-1">
-            <div class="hero-illustration-wrapper">
-              <img src="assets/images/home/ilustracion.png" alt="Evolución clínica" class="hero-illustration" />
-            </div>
+            <img src="assets/images/home/ilustracion.png" alt="Evolución clínica" class="hero-illustration" />
           </div>
         </div>
       </section>

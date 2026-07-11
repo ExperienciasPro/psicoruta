@@ -245,25 +245,25 @@
 }
 
 // ═══════════════════════════════
-// HERO
+// HERO — Unified Composition
 // ═══════════════════════════════
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  padding: 120px 28px 100px;
+  padding: 120px 28px 80px;
   overflow: hidden;
 }
 
 .hero-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: 45% 55%;
+  gap: 0;
   align-items: center;
-  max-width: 1160px;
+  max-width: 1200px;
   width: 100%;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
@@ -277,8 +277,8 @@
 
 .hero-grid-dots {
   position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba($color-text-muted, 0.08) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: radial-gradient(circle, rgba($color-text-muted, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 .hero-orb {
@@ -286,34 +286,107 @@
   filter: blur(150px);
 
   &.orb-1 {
-    width: 700px; height: 700px;
-    background: $color-accent-primary;
-    opacity: 0.12; top: -250px; right: -200px;
-    animation: floatOrb 18s ease-in-out infinite;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba($color-accent-secondary, 0.15), transparent 70%);
+    top: -200px; right: 5%;
   }
   &.orb-2 {
-    width: 500px; height: 500px;
-    background: $color-accent-secondary;
-    opacity: 0.10; bottom: -150px; left: -150px;
-    animation: floatOrb 22s ease-in-out infinite reverse;
-  }
-  &.orb-3 {
-    width: 350px; height: 350px;
-    background: $color-accent-success;
-    opacity: 0.08; top: 35%; left: 45%;
-    animation: floatOrb 15s ease-in-out infinite;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(232, 168, 56, 0.08), transparent 70%);
+    bottom: -100px; left: 20%;
   }
 }
 
-@keyframes floatOrb {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(35px, -30px) scale(1.06); }
-  66% { transform: translate(-25px, 20px) scale(0.94); }
+// — Decorative Elements (depth plane 3) —
+.hero-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.deco-line-1 {
+  width: 280px; height: 280px;
+  border: 1px solid rgba($color-accent-secondary, 0.08);
+  border-radius: 50%;
+  top: 15%; left: 30%;
+}
+
+.deco-line-2 {
+  width: 180px; height: 180px;
+  border: 1px solid rgba($color-accent-primary, 0.06);
+  border-radius: 50%;
+  top: 25%; right: 15%;
+}
+
+.deco-star {
+  font-size: 0.65rem;
+  color: rgba($color-accent-primary, 0.18);
+  animation: twinkle 4s ease-in-out infinite;
+
+  &.star-1 { top: 18%; left: 12%; animation-delay: 0s; }
+  &.star-2 { top: 30%; left: 42%; animation-delay: 1.2s; color: rgba($color-accent-secondary, 0.15); }
+  &.star-3 { top: 12%; right: 25%; animation-delay: 2s; font-size: 0.5rem; }
+  &.star-4 { bottom: 30%; left: 35%; animation-delay: 0.7s; color: rgba(232, 168, 56, 0.2); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+.deco-dot {
+  border-radius: 50%;
+
+  &.dot-1 {
+    width: 4px; height: 4px;
+    background: rgba($color-accent-secondary, 0.2);
+    top: 22%; left: 48%;
+  }
+  &.dot-2 {
+    width: 3px; height: 3px;
+    background: rgba($color-accent-primary, 0.15);
+    top: 40%; left: 25%;
+  }
+  &.dot-3 {
+    width: 5px; height: 5px;
+    background: rgba(232, 168, 56, 0.15);
+    bottom: 25%; right: 30%;
+  }
+}
+
+.deco-halo {
+  border-radius: 50%;
+  border: 1px solid transparent;
+
+  &.halo-1 {
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba($color-accent-secondary, 0.04), transparent 70%);
+    top: 35%; left: 8%;
+  }
+  &.halo-2 {
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(232, 168, 56, 0.05), transparent 70%);
+    top: 20%; right: 35%;
+  }
+}
+
+// — SVG Path (connects CTA to illustration) —
+.hero-path {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60%;
+  z-index: 2;
+  pointer-events: none;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .hero-content {
-  position: relative; z-index: 2;
-  max-width: 600px;
+  position: relative; z-index: 4;
+  max-width: 540px;
 
   @media (max-width: 960px) {
     margin: 0 auto;
@@ -470,26 +543,37 @@
   background: $color-border-default;
 }
 
-// Hero Illustration
+// — Hero Visual (55% column, illustration as focal point) —
 .hero-visual {
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  z-index: 3;
+  margin-right: -60px;
+
+  @media (max-width: 960px) {
+    margin-right: 0;
+    margin-top: 40px;
+  }
+}
+
+.hero-illustration {
+  width: 110%;
+  max-width: 620px;
+  height: auto;
+  object-fit: contain;
+  position: relative;
+
+  @media (max-width: 960px) {
+    width: 90%;
+    max-width: 400px;
+  }
 }
 
 .hero-illustration-wrapper {
   position: relative;
   width: 100%;
-  max-width: 500px;
-}
-
-.hero-illustration {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  position: relative;
-  z-index: 2;
 }
 
 .hero-illustration-glow {
