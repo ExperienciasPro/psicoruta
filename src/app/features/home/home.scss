@@ -490,7 +490,8 @@
   object-fit: contain;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.08));
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.05));
 }
 
 .hero-illustration-glow {
