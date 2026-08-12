@@ -872,8 +872,13 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
       <!-- ═══════ MODAL: NUEVA NOTA (Structured Fields) ═══════ -->
       <div class="modal-overlay" *ngIf="showNoteModal()">
         <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
-          <h3 class="modal-title">Nueva Nota Clínica</h3>
-          <p class="modal-subtitle">Para: {{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</p>
+          <div class="modal-header-row">
+            <div>
+              <h3 class="modal-title">Nueva Nota Clínica</h3>
+              <p class="modal-subtitle">Para: {{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</p>
+            </div>
+            <button class="modal-close-btn" (click)="showNoteModal.set(false)">×</button>
+          </div>
 
           <!-- Template Selector -->
           <div class="template-selector" *ngIf="!noteForm.fromTemplate">
