@@ -413,11 +413,15 @@ export class DesktopLayoutComponent implements OnInit {
       { label: 'Análisis', icon: 'pie-chart', route: '/d/resultados', moduleId: 'resultados' },
       { label: 'Simulador', icon: 'brain', route: '/d/simulador', moduleId: 'simulador' },
       { label: 'Coach Móvil', icon: 'smartphone', route: '/d/coach', moduleId: 'coach' },
+      { label: 'Soporte', icon: 'headphones', route: '/d/soporte' },
       { label: 'Personalizar', icon: 'settings', route: '/d/personalizar' },
     ];
 
     // Add superadmin-only items
     if (this.isSuperAdmin()) {
+      allItems.push({
+        label: 'Bandeja de Soporte', icon: 'headphones', route: '/d/admin/soporte',
+      });
       allItems.push({
         label: 'Suscriptores', icon: 'diamond', route: '/d/suscriptores',
       });

@@ -615,7 +615,7 @@ interface TestAgrupadoItem {
           </div>
 
           <!-- MODAL CONFIRMACIÓN ELIMINAR -->
-          <div *ngIf="showDeleteModal" class="modal-overlay" (click)="cerrarModalEliminar()">
+          <div *ngIf="showDeleteModal" class="modal-overlay">
             <div class="modal-card" (click)="$event.stopPropagation()">
               <div style="width: 56px; height: 56px; border-radius: 14px; background: #fef2f2; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="width: 28px; height: 28px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -1208,7 +1208,7 @@ interface TestAgrupadoItem {
         </div>
 
         <!-- MODAL CONFIRMACIÓN ELIMINAR (genérico) -->
-        <div *ngIf="showDeleteModalGenerico" class="modal-overlay" (click)="cerrarModalEliminarGenerico()">
+        <div *ngIf="showDeleteModalGenerico" class="modal-overlay">
           <div class="modal-card" (click)="$event.stopPropagation()">
             <div style="width: 56px; height: 56px; border-radius: 14px; background: #fef2f2; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
               <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="width: 28px; height: 28px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -1226,7 +1226,7 @@ interface TestAgrupadoItem {
         </div>
 
         <!-- MODAL LIMPIEZA DE DATOS (lista previa de lo que se va a borrar) -->
-        <div *ngIf="showPurgeModal" class="modal-overlay" (click)="cerrarPurgeModal()">
+        <div *ngIf="showPurgeModal" class="modal-overlay">
           <div class="modal-card" (click)="$event.stopPropagation()" style="max-width: 520px; max-height: 85vh; display: flex; flex-direction: column;">
             <!-- Header -->
             <div style="text-align: center; padding-bottom: 16px; border-bottom: 1px solid #f1f5f9; flex-shrink: 0;">

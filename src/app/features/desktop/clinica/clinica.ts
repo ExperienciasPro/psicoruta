@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ClinicaService } from '../../../core/services/clinica.service';
 import { PersonalizationService } from '../../../core/services/personalization.service';
 import { StorageService } from '../../../core/services/storage.service';
+import { CategoryService } from '../../../core/services/category.service';
 import {
   Patient, Appointment, ClinicalNote, ClinicalHistory,
   APPOINTMENT_TYPES, NOTE_TYPES, STATUS_CONFIG, RISK_LEVELS,
@@ -765,7 +766,7 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
       </div>
 
       <!-- ═══════ MODAL: NUEVA CITA ═══════ -->
-      <div class="modal-overlay" *ngIf="showApptModal()" (click)="showApptModal.set(false)">
+      <div class="modal-overlay" *ngIf="showApptModal()">
         <div class="modal-card" (click)="$event.stopPropagation()">
           <h3 class="modal-title">Nueva Cita</h3>
           <p class="modal-subtitle">Completa los datos para agendar</p>
@@ -813,7 +814,7 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
       </div>
 
       <!-- ═══════ MODAL: NUEVO PACIENTE ═══════ -->
-      <div class="modal-overlay" *ngIf="showPatientModal()" (click)="showPatientModal.set(false)">
+      <div class="modal-overlay" *ngIf="showPatientModal()">
         <div class="modal-card" (click)="$event.stopPropagation()">
           <h3 class="modal-title">Nuevo {{ pz.clientSingular() }}</h3>
           <p class="modal-subtitle">Registra un nuevo {{ pz.clientSingular().toLowerCase() }}</p>
@@ -869,7 +870,7 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
       </div>
 
       <!-- ═══════ MODAL: NUEVA NOTA (Structured Fields) ═══════ -->
-      <div class="modal-overlay" *ngIf="showNoteModal()" (click)="showNoteModal.set(false)">
+      <div class="modal-overlay" *ngIf="showNoteModal()">
         <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
           <h3 class="modal-title">Nueva Nota Clínica</h3>
           <p class="modal-subtitle">Para: {{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</p>
@@ -937,13 +938,66 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
                 placeholder="Pensamientos automáticos identificados, emociones predominantes, creencias centrales..."></textarea>
             </div>
 
-            <div class="note-section-field">
+            <div class="note-section-field task-bank-section">
               <div class="note-section-header">
                 <span class="note-section-icon">📝</span>
-                <label>Nueva Tarea para Casa</label>
+                <label>Tarea para Casa</label>
               </div>
-              <textarea [(ngModel)]="noteForm.homework" rows="2"
-                placeholder="Asignación, ejercicios o lecturas para la próxima sesión..."></textarea>
+
+              <!-- Task Search -->
+              <div class="task-search-wrap">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text"
+                  [(ngModel)]="taskSearchQuery"
+                  (focus)="showTaskDropdown = true"
+                  (input)="showTaskDropdown = true"
+                  placeholder="Buscar tarea en el banco de tareas..."
+                  autocomplete="off">
+              </div>
+
+              <!-- Dropdown -->
+              @if (showTaskDropdown && taskSearchQuery.length > 0) {
+                <div class="task-dropdown">
+                  @for (task of filteredBankTasks(); track task.id) {
+                    <div class="task-option" (mousedown)="selectBankTask(task)">
+                      <span class="task-opt-icon" [style.background]="getGoalCatColor(task.category) + '14'">{{ getGoalCatIcon(task.category) }}</span>
+                      <div class="task-opt-info">
+                        <span class="task-opt-title">{{ task.title }}</span>
+                        <span class="task-opt-meta">
+                          <span class="task-opt-cat" [style.background]="getGoalCatColor(task.category) + '18'" [style.color]="getGoalCatColor(task.category)">{{ getGoalCatLabel(task.category) }}</span>
+                          <span *ngIf="task.steps?.length">{{ task.steps.length }} pasos</span>
+                        </span>
+                      </div>
+                    </div>
+                  }
+                  @if (filteredBankTasks().length === 0) {
+                    <div class="task-no-results">No se encontraron tareas con "{{ taskSearchQuery }}"</div>
+                  }
+                  <button class="task-create-btn" (mousedown)="openCreateTaskModal()">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Crear nueva tarea
+                  </button>
+                </div>
+              }
+
+              <!-- Selected tasks chips -->
+              @if (selectedHomeworkTasks.length > 0) {
+                <div class="task-selected-chips">
+                  @for (task of selectedHomeworkTasks; track task.id) {
+                    <div class="task-chip">
+                      <span class="task-chip-icon">{{ getGoalCatIcon(task.category) }}</span>
+                      <span class="task-chip-name">{{ task.title }}</span>
+                      <button class="task-chip-remove" (click)="removeBankTask(task.id)">×</button>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Extra free-text homework -->
+              <div class="task-homework-extra">
+                <textarea [(ngModel)]="noteForm.homework" rows="2"
+                  placeholder="Notas adicionales sobre la tarea (opcional)..."></textarea>
+              </div>
             </div>
 
             <div class="note-section-field">
@@ -1006,8 +1060,89 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
         </div>
       </div>
 
+      <!-- ═══════ MODAL APILADO: CREAR NUEVA TAREA ═══════ -->
+      <div class="modal-overlay stacked" *ngIf="showCreateTaskModal()">
+        <div class="modal-card" (click)="$event.stopPropagation()">
+          <h3 class="modal-title">🎯 Nueva Tarea Terapéutica</h3>
+          <p class="modal-subtitle">Crear y asignar a {{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</p>
+
+          <div class="create-task-form">
+            <div class="ct-field">
+              <label>Título de la tarea</label>
+              <input type="text" [(ngModel)]="newTaskBankForm.title" placeholder="Ej: Ejercicio de respiración diafragmática">
+            </div>
+            <div class="ct-field">
+              <label>Descripción</label>
+              <textarea [(ngModel)]="newTaskBankForm.description" rows="2" placeholder="¿Qué se busca lograr con esta tarea?"></textarea>
+            </div>
+            <div class="ct-field">
+              <label>Instrucciones</label>
+              <textarea [(ngModel)]="newTaskBankForm.instructions" rows="2" placeholder="Paso a paso para ejecutar la tarea..."></textarea>
+            </div>
+            <div class="ct-row">
+              <div class="ct-field">
+                <label>Categoría</label>
+                <select [(ngModel)]="newTaskBankForm.category">
+                  @for (cat of catService.categories(); track cat.id) {
+                    <option [value]="cat.id">{{ cat.icon }} {{ cat.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="ct-field">
+                <label>Prioridad</label>
+                <select [(ngModel)]="newTaskBankForm.priority">
+                  <option value="alta">Alta</option>
+                  <option value="media">Media</option>
+                  <option value="baja">Baja</option>
+                </select>
+              </div>
+            </div>
+            <div class="ct-row-3">
+              <div class="ct-field">
+                <label>Dificultad</label>
+                <select [(ngModel)]="newTaskBankForm.difficulty">
+                  <option value="baja">Baja</option>
+                  <option value="media">Media</option>
+                  <option value="alta">Alta</option>
+                </select>
+              </div>
+              <div class="ct-field">
+                <label>Tiempo estimado (min)</label>
+                <input type="number" [(ngModel)]="newTaskBankForm.estimatedMinutes" min="0" placeholder="30">
+              </div>
+              <div class="ct-field">
+                <label>Fecha objetivo</label>
+                <input type="date" [(ngModel)]="newTaskBankForm.targetDate">
+              </div>
+            </div>
+
+            <!-- Steps -->
+            <div class="ct-field">
+              <label>Pasos</label>
+              <div class="ct-step-add">
+                <input type="text" [(ngModel)]="newStepTitle" placeholder="Título del paso..." (keydown.enter)="addNewTaskStep()">
+                <input type="number" class="ct-days-input" [(ngModel)]="newStepDays" placeholder="Días" min="0">
+                <button (click)="addNewTaskStep()" [disabled]="!newStepTitle.trim()">+</button>
+              </div>
+              @for (step of newTaskBankForm.steps; track step.id) {
+                <div class="ct-step-item">
+                  <span class="ct-step-title">{{ step.title }}</span>
+                  <span class="ct-step-days" *ngIf="step.days > 0">{{ step.days }}d</span>
+                  <button class="ct-step-remove" (click)="removeNewTaskStep(step.id)">×</button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-secondary" (click)="showCreateTaskModal.set(false)">Cancelar</button>
+            <button class="btn-primary" (click)="saveNewBankTask()" [disabled]="!newTaskBankForm.title.trim()">Crear y Asignar</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ═══════ MODAL: NUEVA BANDERA ROJA ═══════ -->
-      <div class="modal-overlay" *ngIf="showRedFlagModal()" (click)="showRedFlagModal.set(false)">
+      <div class="modal-overlay" *ngIf="showRedFlagModal()">
         <div class="modal-card" (click)="$event.stopPropagation()">
           <h3 class="modal-title" style="color: #ef4444;">🚩 Nueva Bandera Roja</h3>
           <p class="modal-subtitle">Información crítica que siempre debe estar visible</p>
@@ -1040,7 +1175,7 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
       </div>
 
       <!-- ═══════ MODAL: NUEVA EVALUACIÓN ═══════ -->
-      <div class="modal-overlay" *ngIf="showEvalModal()" (click)="showEvalModal.set(false)">
+      <div class="modal-overlay" *ngIf="showEvalModal()">
         <div class="modal-card" style="max-width: 600px;" (click)="$event.stopPropagation()">
           <h3 class="modal-title">🧪 Nueva Evaluación Psicológica</h3>
           <p class="modal-subtitle">Selecciona un instrumento y registra resultados para {{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</p>
@@ -1111,7 +1246,7 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
       </div>
 
       <!-- ═══════ MODAL: DETALLE EVALUACIÓN ═══════ -->
-      <div class="modal-overlay" *ngIf="showEvalDetail()" (click)="showEvalDetail.set(false)">
+      <div class="modal-overlay" *ngIf="showEvalDetail()">
         <div class="modal-card" style="max-width: 560px;" (click)="$event.stopPropagation()">
           <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
             <div style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;" [ngClass]="getEvalBannerClass(evalDetailData()?.category || '')">
@@ -1163,6 +1298,7 @@ export class ClinicaComponent implements OnInit {
   clinicaService = inject(ClinicaService);
   pz = inject(PersonalizationService);
   private goalStorage = inject(StorageService);
+  catService = inject(CategoryService);
 
   // ─── State ──────────────────────
   activeTab = signal<MainTab>('pacientes');
@@ -1179,6 +1315,15 @@ export class ClinicaComponent implements OnInit {
   showPatientModal = signal(false);
   showNoteModal = signal(false);
   showRedFlagModal = signal(false);
+  showCreateTaskModal = signal(false);
+
+  // Task bank selector state
+  taskSearchQuery = '';
+  showTaskDropdown = false;
+  selectedHomeworkTasks: any[] = [];
+  newStepTitle = '';
+  newStepDays: number = 0;
+  newTaskBankForm: any = this.emptyTaskBankForm();
 
   // Constants
   appointmentTypes = APPOINTMENT_TYPES;
@@ -1258,6 +1403,17 @@ export class ClinicaComponent implements OnInit {
     const totalTasks = goals.reduce((s: number, g: any) => s + (g.tasks?.length || 0), 0);
     const doneTasks = goals.reduce((s: number, g: any) => s + (g.tasks?.filter((t: any) => t.done).length || 0), 0);
     return { total, completed, active, avgProgress, totalTasks, doneTasks };
+  });
+
+  filteredBankTasks = computed(() => {
+    const q = this.taskSearchQuery.toLowerCase().trim();
+    const allGoals: any[] = this.goalStorage.get<any[]>('pd_goals') || [];
+    const selectedIds = new Set(this.selectedHomeworkTasks.map((t: any) => t.id));
+    const filtered = allGoals.filter(g =>
+      !selectedIds.has(g.id) &&
+      (g.title?.toLowerCase().includes(q) || g.category?.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q))
+    );
+    return filtered.slice(0, 15);
   });
 
   getGoalCatColor(cat: string): string {
@@ -1607,6 +1763,9 @@ export class ClinicaComponent implements OnInit {
 
   openNewNoteModal(): void {
     this.noteForm = this.emptyNoteForm();
+    this.selectedHomeworkTasks = [];
+    this.taskSearchQuery = '';
+    this.showTaskDropdown = false;
     this.showNoteModal.set(true);
   }
 
@@ -1627,8 +1786,19 @@ export class ClinicaComponent implements OnInit {
     if (this.noteForm.thoughtsEmotions?.trim()) {
       sections.push(`<h3>Pensamientos y Emociones</h3><p>${this.noteForm.thoughtsEmotions.trim()}</p>`);
     }
-    if (this.noteForm.homework?.trim()) {
-      sections.push(`<h3>Nueva Tarea para Casa</h3><p>${this.noteForm.homework.trim()}</p>`);
+    if (this.selectedHomeworkTasks.length > 0 || this.noteForm.homework?.trim()) {
+      let homeworkHtml = '<h3>Tareas Asignadas</h3>';
+      if (this.selectedHomeworkTasks.length > 0) {
+        homeworkHtml += '<ul>';
+        for (const task of this.selectedHomeworkTasks) {
+          homeworkHtml += `<li><strong>${task.title}</strong>${task.description ? ' — ' + task.description : ''}</li>`;
+        }
+        homeworkHtml += '</ul>';
+      }
+      if (this.noteForm.homework?.trim()) {
+        homeworkHtml += `<p><em>Notas adicionales:</em> ${this.noteForm.homework.trim()}</p>`;
+      }
+      sections.push(homeworkHtml);
     }
     if (this.noteForm.observations?.trim()) {
       sections.push(`<h3>Observaciones</h3><p>${this.noteForm.observations.trim()}</p>`);
@@ -1656,7 +1826,100 @@ export class ClinicaComponent implements OnInit {
       fromTemplate: this.noteForm.fromTemplate || undefined,
       fromVoice: false,
     });
+    // Assign selected tasks to patient in the bank
+    if (this.selectedHomeworkTasks.length > 0) {
+      const allGoals: any[] = this.goalStorage.get<any[]>('pd_goals') || [];
+      for (const task of this.selectedHomeworkTasks) {
+        // If the task doesn't already have this patient, assign it
+        const existing = allGoals.find(g => g.id === task.id);
+        if (existing && !existing.patientId) {
+          existing.patientId = p.id;
+          existing.clientName = `${p.firstName} ${p.lastName}`;
+        }
+      }
+      this.goalStorage.set('pd_goals', allGoals);
+      // Force reactivity
+      this.selectedPatient.set({ ...p });
+    }
+    this.selectedHomeworkTasks = [];
+    this.taskSearchQuery = '';
     this.showNoteModal.set(false);
+  }
+
+  // ─── Task Bank Actions ──────────
+
+  selectBankTask(task: any): void {
+    if (!this.selectedHomeworkTasks.find(t => t.id === task.id)) {
+      this.selectedHomeworkTasks.push(task);
+    }
+    this.taskSearchQuery = '';
+    this.showTaskDropdown = false;
+  }
+
+  removeBankTask(taskId: string): void {
+    this.selectedHomeworkTasks = this.selectedHomeworkTasks.filter(t => t.id !== taskId);
+  }
+
+  openCreateTaskModal(): void {
+    this.newTaskBankForm = this.emptyTaskBankForm();
+    this.newStepTitle = '';
+    this.newStepDays = 0;
+    this.showTaskDropdown = false;
+    this.showCreateTaskModal.set(true);
+  }
+
+  addNewTaskStep(): void {
+    if (!this.newStepTitle.trim()) return;
+    this.newTaskBankForm.steps.push({
+      id: crypto.randomUUID(),
+      title: this.newStepTitle.trim(),
+      description: '',
+      days: this.newStepDays || 0,
+      done: false
+    });
+    this.newStepTitle = '';
+    this.newStepDays = 0;
+  }
+
+  removeNewTaskStep(id: string): void {
+    this.newTaskBankForm.steps = this.newTaskBankForm.steps.filter((s: any) => s.id !== id);
+  }
+
+  saveNewBankTask(): void {
+    const p = this.selectedPatient();
+    if (!p || !this.newTaskBankForm.title.trim()) return;
+
+    const newTask = {
+      ...this.newTaskBankForm,
+      id: crypto.randomUUID(),
+      patientId: p.id,
+      clientName: `${p.firstName} ${p.lastName}`,
+      createdAt: new Date().toISOString().split('T')[0],
+      tags: [],
+    };
+
+    // Save to bank (pd_goals)
+    const allGoals: any[] = this.goalStorage.get<any[]>('pd_goals') || [];
+    allGoals.push(newTask);
+    this.goalStorage.set('pd_goals', allGoals);
+
+    // Auto-select the new task
+    this.selectedHomeworkTasks.push(newTask);
+
+    // Force patientGoals reactivity
+    this.selectedPatient.set({ ...p });
+
+    this.showCreateTaskModal.set(false);
+    this.taskSearchQuery = '';
+  }
+
+  private emptyTaskBankForm(): any {
+    return {
+      title: '', description: '', instructions: '', category: 'emocional',
+      priority: 'media', difficulty: 'media',
+      estimatedMinutes: 0, progress: 0, status: 'activa',
+      targetDate: '', steps: [],
+    };
   }
 
   // ─── Red Flag Actions ───────────

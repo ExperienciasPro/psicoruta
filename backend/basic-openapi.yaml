@@ -1,0 +1,97 @@
+openapi: 3.0.3
+info:
+  title: PsicoRuta Data Sync API
+  description: API mínima de sincronización global clave-valor para la persistencia del frontend de PsicoRuta.
+  version: 1.0.0
+servers:
+  - url: https://api.psicoruta.com/api
+    description: Servidor de Producción (Nginx VPS)
+  - url: http://localhost:3003/api
+    description: Servidor de Desarrollo Local
+paths:
+  /status:
+    get:
+      summary: Obtener el estado actual del backend
+      responses:
+        '200':
+          description: Estado correcto del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  app:
+                    type: string
+                    example: "PsicoRuta Backend"
+                  timestamp:
+                    type: string
+                    example: "2026-07-13T12:00:00.000Z"
+  /data:
+    parameters:
+      - name: X-Auth-Token
+        in: header
+        required: true
+        description: Token estático de autorización de la API
+        schema:
+          type: string
+          example: "um_api_2026"
+    get:
+      summary: Obtener datos del almacén persistente
+      parameters:
+        - name: key
+          in: query
+          required: true
+          description: Clave del almacén (p. ej. 'um_user_profile') o '_bulk' para todas las claves.
+          schema:
+            type: string
+            example: "_bulk"
+      responses:
+        '200':
+          description: Datos recuperados exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: No autorizado (Token incorrecto o ausente)
+        '400':
+          description: Clave no válida o ausente
+    post:
+      summary: Almacenar o actualizar datos
+      parameters:
+        - name: key
+          in: query
+          required: true
+          description: Clave de destino o '_bulk' para múltiples claves.
+          schema:
+            type: string
+            example: "_bulk"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Datos almacenados exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  savedAt:
+                    type: string
+                    example: "2026-07-13T12:00:00.000Z"
+        '401':
+          description: No autorizado
+        '400':
+          description: Payload inválido o clave no permitida

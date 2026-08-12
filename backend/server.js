@@ -20,11 +20,11 @@ app.use(cors({
   origin: function (origin, callback) {
     const allowed = (process.env.CORS_ORIGIN || 'https://psicoruta.com').split(',').map(s => s.trim());
     // Allow requests with no origin (curl, Postman, server-to-server)
-    if (!origin || allowed.includes(origin)) {
+    if (!origin || allowed.includes(origin) || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
       callback(null, true);
     } else {
-      console.warn(`[CORS] Origen no listado: ${origin}`);
-      callback(null, true); // Permisivo con logging — cambiar a callback(new Error(...)) para bloqueo estricto
+      console.warn(`[CORS] Origen denegado: ${origin}`);
+      callback(new Error('No permitido por políticas de CORS'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -32,8 +32,8 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus: 200,
 }));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // ─── MongoDB Connection ──────────────────────
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/psicoruta_db';
@@ -58,6 +58,10 @@ apiRouter.get('/status', (req, res) => {
 // Data persistence (replaces data.php)
 const dataRoutes = require('./routes/data.routes');
 apiRouter.use('/data', dataRoutes);
+
+// Support tickets
+const supportRoutes = require('./routes/support.routes');
+apiRouter.use('/support', supportRoutes);
 
 // Soporte robusto: Sirve endpoints tanto con prefijo /api (Local/Proxy)
 // como sin él (Producción Nginx VPS que hace rewrite)

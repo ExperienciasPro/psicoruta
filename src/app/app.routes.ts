@@ -139,6 +139,17 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/desktop/subscribers/subscribers.component').then((m) => m.SubscribersComponent),
       },
+      {
+        path: 'soporte',
+        loadComponent: () =>
+          import('./features/desktop/support/support').then((m) => m.SupportComponent),
+      },
+      {
+        path: 'admin/soporte',
+        canActivate: [superadminGuard],
+        loadComponent: () =>
+          import('./features/desktop/admin/support/admin-support').then((m) => m.AdminSupportComponent),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

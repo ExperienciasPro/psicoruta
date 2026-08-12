@@ -2547,3 +2547,400 @@ $clinica-primary-glow: rgba(163, 177, 138, 0.2);
   .metas-stats { grid-template-columns: repeat(2, 1fr); }
   .metas-grid { grid-template-columns: 1fr; }
 }
+
+// ═══════════════════════════════════════════
+// Task Bank Selector (in Note Modal)
+// ═══════════════════════════════════════════
+
+.task-bank-section {
+  position: relative;
+}
+
+.task-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    position: absolute;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    stroke: #94a3b8;
+    fill: none;
+    stroke-width: 2;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 14px 10px 36px;
+    border: 1px solid $color-border-default;
+    border-radius: $radius-md;
+    background: $color-bg-primary;
+    color: $color-text-primary;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: $clinica-primary;
+      box-shadow: 0 0 0 3px $clinica-primary-glow;
+    }
+
+    &::placeholder {
+      color: $color-text-muted;
+      font-style: italic;
+    }
+  }
+}
+
+.task-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: $color-bg-primary;
+  border: 1px solid $color-border-default;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 20;
+  margin-top: 4px;
+  animation: fadeIn 150ms ease;
+}
+
+.task-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: rgba(8, 73, 131, 0.06); }
+
+  .task-opt-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .task-opt-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .task-opt-title {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: $color-text-primary;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .task-opt-meta {
+    font-size: 0.72rem;
+    color: $color-text-muted;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .task-opt-cat {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+}
+
+.task-no-results {
+  padding: 14px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: $color-text-muted;
+}
+
+.task-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent-primary, #084983);
+  transition: background 0.15s;
+
+  &:hover { background: rgba(8, 73, 131, 0.06); }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+}
+
+.task-selected-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.task-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 8px;
+  background: rgba(8, 73, 131, 0.08);
+  border: 1px solid rgba(8, 73, 131, 0.15);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $color-text-primary;
+  animation: fadeIn 200ms ease;
+
+  .task-chip-icon {
+    font-size: 0.9rem;
+  }
+
+  .task-chip-name {
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .task-chip-remove {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.08);
+    color: $color-text-secondary;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    padding: 0;
+    line-height: 1;
+    font-family: inherit;
+
+    &:hover {
+      background: rgba(220, 38, 38, 0.15);
+      color: #dc2626;
+    }
+  }
+}
+
+.task-homework-extra {
+  margin-top: 10px;
+
+  textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid $color-border-default;
+    border-radius: $radius-md;
+    background: $color-bg-primary;
+    color: $color-text-primary;
+    font-family: inherit;
+    font-size: 0.82rem;
+    resize: vertical;
+    transition: border-color $transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: $clinica-primary;
+      box-shadow: 0 0 0 3px $clinica-primary-glow;
+    }
+
+    &::placeholder {
+      color: $color-text-muted;
+      font-style: italic;
+    }
+  }
+}
+
+// ─── Stacked Modal (for creating task from note) ───
+.modal-overlay.stacked {
+  z-index: calc(#{$z-modal} + 10);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.modal-overlay.stacked .modal-card {
+  max-width: 620px;
+}
+
+// ─── Task creation form inside stacked modal ───
+.create-task-form {
+  .ct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+
+    label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: $color-text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input, select, textarea {
+      padding: 10px 12px;
+      border-radius: $radius-md;
+      border: 1px solid $color-border-default;
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: $color-text-primary;
+      background: $color-bg-primary;
+      transition: border-color $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $clinica-primary;
+        box-shadow: 0 0 0 3px $clinica-primary-glow;
+      }
+    }
+
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+  }
+
+  .ct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ct-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.ct-step-add {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid $color-border-default;
+    border-radius: $radius-md;
+    font-family: inherit;
+    font-size: 0.82rem;
+    background: $color-bg-primary;
+    color: $color-text-primary;
+
+    &:focus {
+      outline: none;
+      border-color: $clinica-primary;
+    }
+  }
+
+  .ct-days-input {
+    width: 70px;
+    flex: none;
+  }
+
+  button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-primary, #084983);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.85; }
+    &:disabled { opacity: 0.4; cursor: default; }
+  }
+}
+
+.ct-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(8, 73, 131, 0.04);
+  border-radius: $radius-md;
+  margin-bottom: 4px;
+
+  .ct-step-title {
+    flex: 1;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+
+  .ct-step-days {
+    font-size: 0.72rem;
+    color: $color-text-muted;
+    font-weight: 600;
+  }
+
+  .ct-step-remove {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.06);
+    color: $color-text-secondary;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+
+    &:hover {
+      background: rgba(220, 38, 38, 0.12);
+      color: #dc2626;
+    }
+  }
+}
