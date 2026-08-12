@@ -142,7 +142,7 @@ export const routes: Routes = [
       {
         path: 'soporte',
         loadComponent: () =>
-          import('./features/desktop/support/support').then((m) => m.SupportComponent),
+          import('./features/desktop/support/support').then((m) => m.UserSupportComponent),
       },
       {
         path: 'admin/soporte',

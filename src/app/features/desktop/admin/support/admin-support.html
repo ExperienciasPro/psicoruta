@@ -17,8 +17,8 @@
                [class.active]="selectedTicket()?._id === t._id"
                (click)="openTicket(t)">
             <div class="ticket-item-header">
-              <span class="status-badge" [class.closed]="t.status === 'closed'">
-                {{ t.status === 'open' ? 'Abierto' : 'Cerrado' }}
+              <span class="status-badge" [class.closed]="t.status === 'cerrado'">
+                {{ t.status === 'abierto' ? 'Abierto' : t.status === 'en_proceso' ? 'En Proceso' : t.status === 'resuelto' ? 'Resuelto' : 'Cerrado' }}
               </span>
               <span class="date">{{ t.updatedAt | date:'shortDate' }}</span>
             </div>
@@ -40,8 +40,8 @@
           <div class="detail-title-group">
             <div class="detail-title">
               <h3>{{ selectedTicket()!.subject }}</h3>
-              <span class="status-badge" [class.closed]="selectedTicket()!.status === 'closed'">
-                {{ selectedTicket()!.status === 'open' ? 'Abierto' : 'Cerrado' }}
+              <span class="status-badge" [class.closed]="selectedTicket()!.status === 'cerrado'">
+                {{ selectedTicket()!.status === 'abierto' ? 'Abierto' : selectedTicket()!.status === 'en_proceso' ? 'En Proceso' : selectedTicket()!.status === 'resuelto' ? 'Resuelto' : 'Cerrado' }}
               </span>
             </div>
             <p class="ticket-user">Usuario: {{ selectedTicket()!.userName }} (ID: {{ selectedTicket()!.userId }})</p>
@@ -49,7 +49,7 @@
           
           <div class="header-actions">
             <button class="btn-secondary" (click)="toggleStatus()" [disabled]="submitting()">
-              {{ selectedTicket()!.status === 'open' ? 'Marcar como Resuelto' : 'Reabrir Ticket' }}
+              {{ selectedTicket()!.status === 'abierto' ? 'Marcar como Resuelto' : 'Reabrir Ticket' }}
             </button>
           </div>
         </div>
@@ -70,11 +70,11 @@
           </div>
 
           <!-- Replies -->
-          @for (reply of selectedTicket()!.replies; track reply.createdAt) {
+          @for (reply of selectedTicket()!.messages; track reply.date) {
             <div class="chat-bubble" [class.user-bubble]="reply.sender === 'user'" [class.admin-bubble]="reply.sender === 'admin'" [class.admin-view]="reply.sender === 'user'">
               <div class="bubble-header">
                 <strong>{{ reply.sender === 'user' ? selectedTicket()!.userName : 'Soporte ActuaYa (Tú)' }}</strong>
-                <span>{{ reply.createdAt | date:'short' }}</span>
+                <span>{{ reply.date | date:'short' }}</span>
               </div>
               <div class="bubble-content">
                 <p>{{ reply.message }}</p>
@@ -83,7 +83,7 @@
           }
         </div>
 
-        @if (selectedTicket()!.status === 'open') {
+        @if (selectedTicket()!.status === 'abierto' || selectedTicket()!.status === 'en_proceso') {
           <div class="reply-box">
             <textarea [(ngModel)]="replyMessage" placeholder="Escribe tu respuesta al usuario..." rows="3"></textarea>
             <button class="btn-primary" [disabled]="submitting() || !replyMessage" (click)="sendReply()">

@@ -119,6 +119,16 @@ export class StorageService {
     }
   }
 
+  /** Returns the active user ID from storage */
+  getActiveUserId(): string | null {
+    try {
+      const user = this.get<any>('um_current_user');
+      return user?.id || user?._id || null;
+    } catch {
+      return null;
+    }
+  }
+
   /** Raw string access for admin/stats (avoids JSON parse) */
   getRaw(key: string): string | null {
     try {

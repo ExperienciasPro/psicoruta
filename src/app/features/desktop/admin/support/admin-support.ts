@@ -73,7 +73,7 @@ export class AdminSupportComponent implements OnInit {
     const t = this.selectedTicket();
     if (!t || !t._id) return;
     
-    const newStatus = t.status === 'open' ? 'closed' : 'open';
+    const newStatus: SupportTicket['status'] = t.status === 'abierto' ? 'cerrado' : 'abierto';
     this.submitting.set(true);
     this.support.updateStatus(t._id, newStatus).subscribe({
       next: (updated) => {

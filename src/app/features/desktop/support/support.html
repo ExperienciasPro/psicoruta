@@ -17,8 +17,8 @@
                [class.active]="selectedTicket()?._id === t._id"
                (click)="openTicket(t)">
             <div class="ticket-item-header">
-              <span class="status-badge" [class.closed]="t.status === 'closed'">
-                {{ t.status === 'open' ? 'Abierto' : 'Cerrado' }}
+              <span class="status-badge" [class.closed]="t.status === 'cerrado'">
+                {{ t.status === 'abierto' ? 'Abierto' : t.status === 'en_proceso' ? 'En Proceso' : t.status === 'resuelto' ? 'Resuelto' : 'Cerrado' }}
               </span>
               <span class="date">{{ t.updatedAt | date:'shortDate' }}</span>
             </div>
@@ -73,8 +73,8 @@
           <button class="btn-back" (click)="goBack()"><um-icon name="arrow-left"></um-icon></button>
           <div class="detail-title">
             <h3>{{ selectedTicket()!.subject }}</h3>
-            <span class="status-badge" [class.closed]="selectedTicket()!.status === 'closed'">
-              {{ selectedTicket()!.status === 'open' ? 'Abierto' : 'Cerrado' }}
+            <span class="status-badge" [class.closed]="selectedTicket()!.status === 'cerrado'">
+              {{ selectedTicket()!.status === 'abierto' ? 'Abierto' : selectedTicket()!.status === 'en_proceso' ? 'En Proceso' : selectedTicket()!.status === 'resuelto' ? 'Resuelto' : 'Cerrado' }}
             </span>
           </div>
         </div>
@@ -95,11 +95,11 @@
           </div>
 
           <!-- Replies -->
-          @for (reply of selectedTicket()!.replies; track reply.createdAt) {
+          @for (reply of selectedTicket()!.messages; track reply.date) {
             <div class="chat-bubble" [class.user-bubble]="reply.sender === 'user'" [class.admin-bubble]="reply.sender === 'admin'">
               <div class="bubble-header">
                 <strong>{{ reply.sender === 'user' ? 'Tú' : 'Soporte ActuaYa' }}</strong>
-                <span>{{ reply.createdAt | date:'short' }}</span>
+                <span>{{ reply.date | date:'short' }}</span>
               </div>
               <div class="bubble-content">
                 <p>{{ reply.message }}</p>
