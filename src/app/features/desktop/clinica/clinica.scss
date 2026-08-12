@@ -2598,6 +2598,54 @@ $clinica-primary-glow: rgba(163, 177, 138, 0.2);
   }
 }
 
+.task-cat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.task-cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: $color-bg-primary;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+
+  &:hover {
+    background: rgba(8, 73, 131, 0.06);
+    border-color: rgba(8, 73, 131, 0.15);
+  }
+
+  &.active {
+    background: var(--cat-color, #084983);
+    color: white;
+    border-color: var(--cat-color, #084983);
+  }
+
+  .task-cat-count {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.06);
+    min-width: 18px;
+    text-align: center;
+  }
+
+  &.active .task-cat-count {
+    background: rgba(255,255,255,0.25);
+  }
+}
+
 .task-dropdown {
   position: absolute;
   top: 100%;

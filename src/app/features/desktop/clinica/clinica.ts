@@ -950,13 +950,28 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
                 <input type="text"
                   [(ngModel)]="taskSearchQuery"
                   (focus)="showTaskDropdown = true"
-                  (input)="showTaskDropdown = true"
+                  (input)="selectedTaskCatFilter = ''; showTaskDropdown = true"
                   placeholder="Buscar tarea en el banco de tareas..."
                   autocomplete="off">
               </div>
 
-              <!-- Dropdown -->
-              @if (showTaskDropdown && taskSearchQuery.length > 0) {
+              <!-- Category Chips -->
+              <div class="task-cat-chips">
+                @for (cat of catService.categories(); track cat.id) {
+                  @if (bankTaskCountByCategory(cat.id) > 0) {
+                    <button class="task-cat-chip"
+                      [class.active]="selectedTaskCatFilter === cat.id"
+                      [style.--cat-color]="cat.color"
+                      (click)="toggleTaskCatFilter(cat.id)">
+                      <span>{{ cat.icon }}</span> {{ cat.label }}
+                      <span class="task-cat-count">{{ bankTaskCountByCategory(cat.id) }}</span>
+                    </button>
+                  }
+                }
+              </div>
+
+              <!-- Dropdown: by search OR by category -->
+              @if ((showTaskDropdown && taskSearchQuery.length > 0) || selectedTaskCatFilter) {
                 <div class="task-dropdown">
                   @for (task of filteredBankTasks(); track task.id) {
                     <div class="task-option" (mousedown)="selectBankTask(task)">
@@ -971,7 +986,7 @@ type ExpTab = 'historia' | 'notas' | 'timeline' | 'banderas' | 'evaluaciones' | 
                     </div>
                   }
                   @if (filteredBankTasks().length === 0) {
-                    <div class="task-no-results">No se encontraron tareas con "{{ taskSearchQuery }}"</div>
+                    <div class="task-no-results">No se encontraron tareas{{ selectedTaskCatFilter ? ' en esta categoría' : ' con "' + taskSearchQuery + '"' }}</div>
                   }
                   <button class="task-create-btn" (mousedown)="openCreateTaskModal()">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1321,6 +1336,7 @@ export class ClinicaComponent implements OnInit {
   taskSearchQuery = '';
   showTaskDropdown = false;
   selectedHomeworkTasks: any[] = [];
+  selectedTaskCatFilter = '';
   newStepTitle = '';
   newStepDays: number = 0;
   newTaskBankForm: any = this.emptyTaskBankForm();
@@ -1407,14 +1423,34 @@ export class ClinicaComponent implements OnInit {
 
   filteredBankTasks = computed(() => {
     const q = this.taskSearchQuery.toLowerCase().trim();
+    const catFilter = this.selectedTaskCatFilter;
     const allGoals: any[] = this.goalStorage.get<any[]>('pd_goals') || [];
     const selectedIds = new Set(this.selectedHomeworkTasks.map((t: any) => t.id));
-    const filtered = allGoals.filter(g =>
-      !selectedIds.has(g.id) &&
-      (g.title?.toLowerCase().includes(q) || g.category?.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q))
-    );
-    return filtered.slice(0, 15);
+    const filtered = allGoals.filter(g => {
+      if (selectedIds.has(g.id)) return false;
+      if (catFilter && g.category !== catFilter) return false;
+      if (q) {
+        return g.title?.toLowerCase().includes(q) || g.category?.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q);
+      }
+      return true;
+    });
+    return filtered.slice(0, 20);
   });
+
+  bankTaskCountByCategory(catId: string): number {
+    const allGoals: any[] = this.goalStorage.get<any[]>('pd_goals') || [];
+    return allGoals.filter(g => g.category === catId).length;
+  }
+
+  toggleTaskCatFilter(catId: string): void {
+    if (this.selectedTaskCatFilter === catId) {
+      this.selectedTaskCatFilter = '';
+    } else {
+      this.selectedTaskCatFilter = catId;
+      this.taskSearchQuery = '';
+      this.showTaskDropdown = false;
+    }
+  }
 
   getGoalCatColor(cat: string): string {
     const colors: Record<string, string> = {
@@ -1766,6 +1802,7 @@ export class ClinicaComponent implements OnInit {
     this.selectedHomeworkTasks = [];
     this.taskSearchQuery = '';
     this.showTaskDropdown = false;
+    this.selectedTaskCatFilter = '';
     this.showNoteModal.set(true);
   }
 
