@@ -60,7 +60,6 @@ interface TherapeuticTask {
               Árbol
             </button>
           </div>
-          <div class="g-stats">
             <div class="g-stat">
               <span class="g-stat-num">{{ activeGoals().length }}</span>
               <span class="g-stat-label">Activas</span>
@@ -68,10 +67,6 @@ interface TherapeuticTask {
             <div class="g-stat">
               <span class="g-stat-num">{{ completedCount() }}</span>
               <span class="g-stat-label">Completadas</span>
-            </div>
-            <div class="g-stat">
-              <span class="g-stat-num">{{ avgProgress() }}%</span>
-              <span class="g-stat-label">Progreso</span>
             </div>
           </div>
           <button class="g-btn-new" (click)="openNew()">
@@ -97,62 +92,99 @@ interface TherapeuticTask {
       </div>
 
       <!-- Goal cards -->
-      <div class="g-grid">
-        @for (goal of filteredGoals(); track goal.id) {
-          <div class="g-card" (click)="editGoal(goal)">
-            <div class="g-card-top">
-              <span class="g-cat-badge" [style.background]="getCatColor(goal.category) + '18'" [style.color]="getCatColor(goal.category)">
-                {{ getCatIcon(goal.category) }} {{ getCatLabel(goal.category) }}
-              </span>
-              <span class="g-priority" [class]="'priority-' + goal.priority">{{ goal.priority }}</span>
-            </div>
-            <h3 class="g-card-title">{{ goal.title }}</h3>
-            <p class="g-card-client">{{ goal.clientName }}</p>
-            <p class="g-card-desc">{{ goal.description }}</p>
+      <div class="g-columns">
+        <!-- Columna 1: Mis tareas -->
+        <div class="g-column">
+          <div class="g-column-header">
+            <h2>Mis tareas</h2>
+            <span class="g-col-count">{{ filteredGoals().length }}</span>
+          </div>
+          <div class="g-col-content">
+            @for (goal of filteredGoals(); track goal.id) {
+              <div class="g-card" (click)="editGoal(goal)">
+                <div class="g-card-top">
+                  <span class="g-cat-badge" [style.background]="getCatColor(goal.category) + '18'" [style.color]="getCatColor(goal.category)">
+                    {{ getCatIcon(goal.category) }} {{ getCatLabel(goal.category) }}
+                  </span>
+                  <span class="g-priority" [class]="'priority-' + goal.priority">{{ goal.priority }}</span>
+                </div>
+                <h3 class="g-card-title">{{ goal.title }}</h3>
+                <p class="g-card-client">{{ goal.clientName }}</p>
+                <p class="g-card-desc">{{ goal.description }}</p>
 
-            <!-- Tasks -->
-            @if (goal.steps.length > 0) {
-              <div class="g-tasks">
-                @for (step of goal.steps.slice(0, 3); track step.id) {
-                  <div class="g-task" [class.done]="step.done" (click)="toggleStep(goal, step); $event.stopPropagation()">
-                    <span class="g-check">{{ step.done ? '✓' : '' }}</span>
-                    <div class="g-task-info">
-                      <span class="g-task-title">{{ step.title }}</span>
-                      @if (step.days > 0) {
-                        <span class="g-task-days">{{ step.days }} día{{ step.days > 1 ? 's' : '' }}</span>
-                      }
-                    </div>
+                <!-- Tasks -->
+                @if (goal.steps.length > 0) {
+                  <div class="g-tasks">
+                    @for (step of goal.steps.slice(0, 3); track step.id) {
+                      <div class="g-task" [class.done]="step.done" (click)="toggleStep(goal, step); $event.stopPropagation()">
+                        <span class="g-check">{{ step.done ? '✓' : '' }}</span>
+                        <div class="g-task-info">
+                          <span class="g-task-title">{{ step.title }}</span>
+                          @if (step.days > 0) {
+                            <span class="g-task-days">{{ step.days }} día{{ step.days > 1 ? 's' : '' }}</span>
+                          }
+                        </div>
+                      </div>
+                    }
+                    @if (goal.steps.length > 3) {
+                      <span class="g-more">+{{ goal.steps.length - 3 }} más</span>
+                    }
                   </div>
                 }
-                @if (goal.steps.length > 3) {
-                  <span class="g-more">+{{ goal.steps.length - 3 }} más</span>
-                }
+
+                <!-- Progress bar -->
+                <div class="g-progress-wrap">
+                  <div class="g-progress-bar">
+                    <div class="g-progress-fill" [style.width.%]="goal.progress" [style.background]="getCatColor(goal.category)"></div>
+                  </div>
+                  <span class="g-progress-pct">{{ goal.progress }}%</span>
+                </div>
+
+                <div class="g-card-footer">
+                  <span class="g-date">📅 {{ goal.targetDate }}</span>
+                  <span class="g-status" [class]="'status-' + goal.status">{{ goal.status }}</span>
+                </div>
               </div>
             }
 
-            <!-- Progress bar -->
-            <div class="g-progress-wrap">
-              <div class="g-progress-bar">
-                <div class="g-progress-fill" [style.width.%]="goal.progress" [style.background]="getCatColor(goal.category)"></div>
+            @if (filteredGoals().length === 0) {
+              <div class="g-empty">
+                <span class="g-empty-icon">📋</span>
+                <h3>Sin tareas</h3>
+                <p>Crea una tarea para tus {{ clientPlural() }}.</p>
+                <button class="g-btn-new" (click)="openNew()">Crear Tarea</button>
               </div>
-              <span class="g-progress-pct">{{ goal.progress }}%</span>
-            </div>
-
-            <div class="g-card-footer">
-              <span class="g-date">📅 {{ goal.targetDate }}</span>
-              <span class="g-status" [class]="'status-' + goal.status">{{ goal.status }}</span>
-            </div>
+            }
           </div>
-        }
+        </div>
 
-        @if (filteredGoals().length === 0) {
-          <div class="g-empty">
-            <span class="g-empty-icon">📋</span>
-            <h3>Sin tareas en esta categoría</h3>
-            <p>Crea una tarea terapéutica reutilizable para tus {{ clientPlural() }}.</p>
-            <button class="g-btn-new" (click)="openNew()">Crear Tarea</button>
+        <!-- Columna 2: Banco de tareas -->
+        <div class="g-column">
+          <div class="g-column-header">
+            <h2>Banco de tareas</h2>
+            <span class="g-col-count">0</span>
           </div>
-        }
+          <div class="g-col-content">
+             <div class="g-empty-col">
+               <span class="g-empty-icon">🏦</span>
+               <p>Plantillas del sistema</p>
+             </div>
+          </div>
+        </div>
+
+        <!-- Columna 3: Tareas creadas por la comunidad -->
+        <div class="g-column">
+          <div class="g-column-header">
+            <h2>Tareas de la comunidad</h2>
+            <span class="g-col-count">0</span>
+          </div>
+          <div class="g-col-content">
+             <div class="g-empty-col">
+               <span class="g-empty-icon">🌍</span>
+               <p>Tareas compartidas</p>
+             </div>
+          </div>
+        </div>
       </div>
       }
 
