@@ -104,41 +104,6 @@ interface TherapeuticTask {
                   <span class="g-priority" [class]="'priority-' + goal.priority">{{ goal.priority }}</span>
                 </div>
                 <h3 class="g-card-title">{{ goal.title }}</h3>
-                <p class="g-card-client">{{ goal.clientName }}</p>
-                <p class="g-card-desc">{{ goal.description }}</p>
-
-                <!-- Tasks -->
-                @if (goal.steps.length > 0) {
-                  <div class="g-tasks">
-                    @for (step of goal.steps.slice(0, 3); track step.id) {
-                      <div class="g-task" [class.done]="step.done" (click)="toggleStep(goal, step); $event.stopPropagation()">
-                        <span class="g-check">{{ step.done ? '✓' : '' }}</span>
-                        <div class="g-task-info">
-                          <span class="g-task-title">{{ step.title }}</span>
-                          @if (step.days > 0) {
-                            <span class="g-task-days">{{ step.days }} día{{ step.days > 1 ? 's' : '' }}</span>
-                          }
-                        </div>
-                      </div>
-                    }
-                    @if (goal.steps.length > 3) {
-                      <span class="g-more">+{{ goal.steps.length - 3 }} más</span>
-                    }
-                  </div>
-                }
-
-                <!-- Progress bar -->
-                <div class="g-progress-wrap">
-                  <div class="g-progress-bar">
-                    <div class="g-progress-fill" [style.width.%]="goal.progress" [style.background]="getCatColor(goal.category)"></div>
-                  </div>
-                  <span class="g-progress-pct">{{ goal.progress }}%</span>
-                </div>
-
-                <div class="g-card-footer">
-                  <span class="g-date">📅 {{ goal.targetDate }}</span>
-                  <span class="g-status" [class]="'status-' + goal.status">{{ goal.status }}</span>
-                </div>
               </div>
             }
 
