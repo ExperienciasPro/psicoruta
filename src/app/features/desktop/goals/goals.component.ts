@@ -60,16 +60,7 @@ interface TherapeuticTask {
               Árbol
             </button>
           </div>
-          <div class="g-stats">
-            <div class="g-stat">
-              <span class="g-stat-num">{{ activeGoals().length }}</span>
-              <span class="g-stat-label">Activas</span>
-            </div>
-            <div class="g-stat">
-              <span class="g-stat-num">{{ completedCount() }}</span>
-              <span class="g-stat-label">Completadas</span>
-            </div>
-          </div>
+
           <button class="g-btn-new" (click)="openNew()">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             Nueva Tarea
