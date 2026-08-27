@@ -88,7 +88,10 @@ interface TherapeuticTask {
         <!-- Columna 1: Mis tareas -->
         <div class="g-column">
           <div class="g-column-header">
-            <h2>Mis tareas</h2>
+            <div class="g-col-title-wrap">
+              <span class="g-col-icon">📌</span>
+              <h2>Mis tareas</h2>
+            </div>
             <span class="g-col-count">{{ filteredGoals().length }}</span>
           </div>
           <div class="g-col-content">
@@ -153,7 +156,10 @@ interface TherapeuticTask {
         <!-- Columna 2: Banco de tareas -->
         <div class="g-column">
           <div class="g-column-header">
-            <h2>Banco de tareas</h2>
+            <div class="g-col-title-wrap">
+              <span class="g-col-icon">🏦</span>
+              <h2>Banco de tareas</h2>
+            </div>
             <span class="g-col-count">0</span>
           </div>
           <div class="g-col-content">
@@ -167,7 +173,10 @@ interface TherapeuticTask {
         <!-- Columna 3: Tareas creadas por la comunidad -->
         <div class="g-column">
           <div class="g-column-header">
-            <h2>Tareas de la comunidad</h2>
+            <div class="g-col-title-wrap">
+              <span class="g-col-icon">🌍</span>
+              <h2>Tareas de la comunidad</h2>
+            </div>
             <span class="g-col-count">0</span>
           </div>
           <div class="g-col-content">
