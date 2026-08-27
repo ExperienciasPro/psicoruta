@@ -573,7 +573,7 @@ export class GoalsComponent {
       const fallback = this.catService.categories()[0]?.id || 'otro';
       const updated = this.tasks().map(t => t.category === id ? { ...t, category: fallback } : t);
       this.tasks.set(updated);
-      this.save();
+      this.saveAll();
     }
     if (this.filterCat() === id) this.filterCat.set('all');
   }
