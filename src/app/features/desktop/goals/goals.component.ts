@@ -60,6 +60,7 @@ interface TherapeuticTask {
               Árbol
             </button>
           </div>
+          <div class="g-stats">
             <div class="g-stat">
               <span class="g-stat-num">{{ activeGoals().length }}</span>
               <span class="g-stat-label">Activas</span>
