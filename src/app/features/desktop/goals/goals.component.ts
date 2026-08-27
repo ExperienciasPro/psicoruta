@@ -125,13 +125,27 @@ interface TherapeuticTask {
               <span class="g-col-icon">🏦</span>
               <h2>Banco de tareas</h2>
             </div>
-            <span class="g-col-count">0</span>
+            <span class="g-col-count">{{ filteredBancoGoals().length }}</span>
           </div>
           <div class="g-col-content">
-             <div class="g-empty-col">
-               <span class="g-empty-icon">🏦</span>
-               <p>Plantillas del sistema</p>
-             </div>
+            @for (goal of filteredBancoGoals(); track goal.id) {
+              <div class="g-card" (click)="editGoal(goal)">
+                <div class="g-card-top">
+                  <span class="g-cat-badge" [style.background]="getCatColor(goal.category) + '18'" [style.color]="getCatColor(goal.category)">
+                    {{ getCatIcon(goal.category) }} {{ getCatLabel(goal.category) }}
+                  </span>
+                  <span class="g-priority" [class]="'priority-' + goal.priority">{{ goal.priority }}</span>
+                </div>
+                <h3 class="g-card-title">{{ goal.title }}</h3>
+              </div>
+            }
+
+            @if (filteredBancoGoals().length === 0) {
+              <div class="g-empty-col">
+                <span class="g-empty-icon">🏦</span>
+                <p>Plantillas del sistema</p>
+              </div>
+            }
           </div>
         </div>
 
@@ -142,13 +156,27 @@ interface TherapeuticTask {
               <span class="g-col-icon">🌍</span>
               <h2>Tareas de la comunidad</h2>
             </div>
-            <span class="g-col-count">0</span>
+            <span class="g-col-count">{{ filteredComunidadGoals().length }}</span>
           </div>
           <div class="g-col-content">
-             <div class="g-empty-col">
-               <span class="g-empty-icon">🌍</span>
-               <p>Tareas compartidas</p>
-             </div>
+            @for (goal of filteredComunidadGoals(); track goal.id) {
+              <div class="g-card" (click)="editGoal(goal)">
+                <div class="g-card-top">
+                  <span class="g-cat-badge" [style.background]="getCatColor(goal.category) + '18'" [style.color]="getCatColor(goal.category)">
+                    {{ getCatIcon(goal.category) }} {{ getCatLabel(goal.category) }}
+                  </span>
+                  <span class="g-priority" [class]="'priority-' + goal.priority">{{ goal.priority }}</span>
+                </div>
+                <h3 class="g-card-title">{{ goal.title }}</h3>
+              </div>
+            }
+
+            @if (filteredComunidadGoals().length === 0) {
+              <div class="g-empty-col">
+                <span class="g-empty-icon">🌍</span>
+                <p>Tareas compartidas</p>
+              </div>
+            }
           </div>
         </div>
       </div>
@@ -457,6 +485,21 @@ export class GoalsComponent {
   filteredGoals = computed(() => {
     const cat = this.filterCat();
     const all = this.tasks();
+    return cat === 'all' ? all : all.filter(g => g.category === cat);
+  });
+
+  bancoTareas = signal<TherapeuticTask[]>([]);
+  comunidadTareas = signal<TherapeuticTask[]>([]);
+
+  filteredBancoGoals = computed(() => {
+    const cat = this.filterCat();
+    const all = this.bancoTareas();
+    return cat === 'all' ? all : all.filter(g => g.category === cat);
+  });
+
+  filteredComunidadGoals = computed(() => {
+    const cat = this.filterCat();
+    const all = this.comunidadTareas();
     return cat === 'all' ? all : all.filter(g => g.category === cat);
   });
 
