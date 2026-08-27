@@ -120,12 +120,12 @@ interface TherapeuticTask {
           </div>
         </div>
 
-        <!-- Columna 2: Banco de tareas -->
+        <!-- Columna 2: Tareas recomendadas por expertos -->
         <div class="g-column">
           <div class="g-column-header">
             <div class="g-col-title-wrap">
               <span class="g-col-icon">🏦</span>
-              <h2>Banco de tareas</h2>
+              <h2>Tareas recomendadas por expertos</h2>
             </div>
             <span class="g-col-count">{{ filteredBancoGoals().length }}</span>
           </div>
@@ -267,7 +267,7 @@ interface TherapeuticTask {
                 <label>Guardar en:</label>
                 <select [(ngModel)]="form.source">
                   <option value="personal">Mis tareas (Privado)</option>
-                  <option value="bank">Banco de tareas (Plantilla del sistema)</option>
+                  <option value="bank">Tareas recomendadas por expertos (Plantilla del sistema)</option>
                   <option value="community">Tareas de la comunidad (Compartir)</option>
                 </select>
               </div>
