@@ -69,7 +69,7 @@ jobs:
   # ═══════════════════════════════════════════════════
   deploy_backend:
     name: 🟢 Deploy Backend
-    runs-on: [self-hosted, frontend]
+    runs-on: [self-hosted, backend]
 
     steps:
       - name: 📥 Checkout del código
