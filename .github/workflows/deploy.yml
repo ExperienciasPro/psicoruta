@@ -55,6 +55,9 @@ jobs:
             sudo ln -s /etc/nginx/sites-available/front-psicoruta.com /etc/nginx/sites-enabled/
           fi
 
+          # LIMPIEZA DE EMERGENCIA: Eliminar el archivo del backend que está rompiendo Nginx
+          sudo rm -f /etc/nginx/sites-enabled/api.psicoruta.com
+
           if sudo nginx -t 2>&1; then
             sudo systemctl reload nginx
             echo "✅ Nginx frontend recargado"
@@ -110,21 +113,18 @@ jobs:
           pm2 save
           echo "✅ Backend reiniciado"
 
-      - name: ⚡ Configurar Nginx
+      - name: ⚡ Configurar Nginx (Desactivado temporalmente)
         run: |
-          sudo cp nginx/backend.conf /etc/nginx/sites-available/api.psicoruta.com
-
-          if [ ! -L /etc/nginx/sites-enabled/api.psicoruta.com ]; then
-            sudo ln -s /etc/nginx/sites-available/api.psicoruta.com /etc/nginx/sites-enabled/
-          fi
-
-          if sudo nginx -t 2>&1; then
-            sudo systemctl reload nginx
-            echo "✅ Nginx backend recargado"
-          else
-            echo "❌ Error en config Nginx"
-            exit 1
-          fi
+          echo "Saltando configuración de Nginx para evitar romper el servidor por falta de certificado SSL."
+          # sudo cp nginx/backend.conf /etc/nginx/sites-available/api.psicoruta.com
+          # if [ ! -L /etc/nginx/sites-enabled/api.psicoruta.com ]; then
+          #   sudo ln -s /etc/nginx/sites-available/api.psicoruta.com /etc/nginx/sites-enabled/
+          # fi
+          # if sudo nginx -t 2>&1; then
+          #   sudo systemctl reload nginx
+          # else
+          #   exit 1
+          # fi
 
       - name: ✅ Health Check
         run: |
