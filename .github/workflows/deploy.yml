@@ -75,6 +75,11 @@ jobs:
       - name: 📥 Checkout del código
         uses: actions/checkout@v4
 
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - name: 📂 Sincronizar archivos backend
         run: |
           sudo mkdir -p /var/www/psicoruta-backend
