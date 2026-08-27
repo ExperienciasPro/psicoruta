@@ -5,6 +5,7 @@ import { StorageService } from '../../../core/services/storage.service';
 import { PersonalizationService } from '../../../core/services/personalization.service';
 import { ClinicaService } from '../../../core/services/clinica.service';
 import { CategoryService, TaskCategory } from '../../../core/services/category.service';
+import { UserService } from '../../../core/services/user.service';
 import { Patient } from '../../../core/models/clinica.model';
 
 interface TaskStep {
@@ -32,6 +33,7 @@ interface TherapeuticTask {
   createdAt: string;
   tags: string[];
   steps: TaskStep[];
+  source?: 'personal' | 'bank' | 'community';
   /** @deprecated migrated from old tasks */
   tasks?: TaskStep[];
   /** @deprecated migrated from old subGoals */
@@ -260,6 +262,16 @@ interface TherapeuticTask {
             </button>
           </div>
           <div class="g-modal-body">
+            @if (canCreateSystemTasks()) {
+              <div class="g-field">
+                <label>Guardar en:</label>
+                <select [(ngModel)]="form.source">
+                  <option value="personal">Mis tareas (Privado)</option>
+                  <option value="bank">Banco de tareas (Plantilla del sistema)</option>
+                  <option value="community">Tareas de la comunidad (Compartir)</option>
+                </select>
+              </div>
+            }
             <div class="g-field">
               <label>Título de la tarea</label>
               <input type="text" [(ngModel)]="form.title" placeholder="Ej: Ejercicio de respiración diafragmática">
@@ -433,12 +445,22 @@ export class GoalsComponent {
   private pz = inject(PersonalizationService);
   private clinicaService = inject(ClinicaService);
   catService = inject(CategoryService);
+  userService = inject(UserService);
   private readonly KEY = 'pd_goals';
+  private readonly BANK_KEY = 'sys_task_bank';
+  private readonly COMM_KEY = 'com_task_bank';
 
   clientSingular = this.pz.clientSingular;
   clientPlural = this.pz.clientPlural;
 
-  tasks = signal<TherapeuticTask[]>(this.load());
+  canCreateSystemTasks = computed(() => {
+    const role = this.userService.profile()?.role;
+    return role === 'superadmin' || role === 'admin';
+  });
+
+  tasks = signal<TherapeuticTask[]>(this.load(this.KEY, 'personal'));
+  bancoTareas = signal<TherapeuticTask[]>(this.load(this.BANK_KEY, 'bank'));
+  comunidadTareas = signal<TherapeuticTask[]>(this.load(this.COMM_KEY, 'community'));
   showModal = signal(false);
   showCatModal = signal(false);
   editingId = signal<string | null>(null);
@@ -487,9 +509,6 @@ export class GoalsComponent {
     const all = this.tasks();
     return cat === 'all' ? all : all.filter(g => g.category === cat);
   });
-
-  bancoTareas = signal<TherapeuticTask[]>([]);
-  comunidadTareas = signal<TherapeuticTask[]>([]);
 
   filteredBancoGoals = computed(() => {
     const cat = this.filterCat();
@@ -608,7 +627,7 @@ export class GoalsComponent {
     const done = goal.steps.filter(t => t.done).length;
     goal.progress = Math.round((done / total) * 100);
     if (goal.progress === 100) goal.status = 'completada';
-    this.save();
+    this.saveAll();
   }
 
   addStep() {
@@ -630,24 +649,46 @@ export class GoalsComponent {
   }
 
   saveTask() {
-    const list = [...this.tasks()];
+    const source = this.form.source || 'personal';
     const tags = (this.form.tagsInput || '').split(',').map((t: string) => t.trim()).filter(Boolean);
-    const entry = { ...this.form, tags, tagsInput: undefined };
+    const entry: TherapeuticTask = { ...this.form, tags, tagsInput: undefined };
+
+    let targetList = source === 'bank' ? this.bancoTareas :
+                     source === 'community' ? this.comunidadTareas : this.tasks;
+    const list = [...targetList()];
+
     if (this.editingId()) {
       const idx = list.findIndex(g => g.id === this.editingId());
       if (idx >= 0) list[idx] = entry;
+      else list.push(entry); // In case they changed the source, although moving is not fully handled this way, it saves it. Wait, moving requires removing from old list.
     } else {
       list.push({ ...entry, id: crypto.randomUUID(), createdAt: new Date().toISOString().split('T')[0] });
     }
-    this.tasks.set(list);
-    this.save();
+    
+    // Simplification: if we are editing, let's just replace all and remove from others if moved.
+    if (this.editingId()) {
+       this.tasks.set(this.tasks().filter(g => g.id !== this.editingId() || g.source === 'personal'));
+       this.bancoTareas.set(this.bancoTareas().filter(g => g.id !== this.editingId() || g.source === 'bank'));
+       this.comunidadTareas.set(this.comunidadTareas().filter(g => g.id !== this.editingId() || g.source === 'community'));
+       
+       // Force add to correct list
+       if (source === 'bank') this.bancoTareas.update(l => { const idx = l.findIndex(x => x.id === entry.id); if (idx<0) l.push(entry); else l[idx]=entry; return [...l]; });
+       else if (source === 'community') this.comunidadTareas.update(l => { const idx = l.findIndex(x => x.id === entry.id); if (idx<0) l.push(entry); else l[idx]=entry; return [...l]; });
+       else this.tasks.update(l => { const idx = l.findIndex(x => x.id === entry.id); if (idx<0) l.push(entry); else l[idx]=entry; return [...l]; });
+    } else {
+       targetList.set(list);
+    }
+    
+    this.saveAll();
     this.showModal.set(false);
   }
 
   deleteTask() {
     if (!confirm('¿Eliminar esta tarea?')) return;
     this.tasks.set(this.tasks().filter(g => g.id !== this.editingId()));
-    this.save();
+    this.bancoTareas.set(this.bancoTareas().filter(g => g.id !== this.editingId()));
+    this.comunidadTareas.set(this.comunidadTareas().filter(g => g.id !== this.editingId()));
+    this.saveAll();
     this.showModal.set(false);
   }
 
@@ -657,15 +698,19 @@ export class GoalsComponent {
       priority: 'media' as const, difficulty: 'media' as const,
       estimatedMinutes: 0, progress: 0, status: 'activa' as const,
       patientId: '', clientName: '', targetDate: '',
-      steps: [], tags: [], tagsInput: '', createdAt: ''
+      steps: [], tags: [], tagsInput: '', createdAt: '', source: 'personal' as const
     };
   }
 
   /** Load tasks and migrate legacy formats */
-  private load(): TherapeuticTask[] {
+  private load(key: string, source: 'personal'|'bank'|'community'): TherapeuticTask[] {
     try {
-      const raw = this.storage.get<any[]>(this.KEY) || [];
-      return raw.map(g => this.migrateTask(g));
+      const raw = this.storage.get<any[]>(key) || [];
+      return raw.map(g => {
+        const migrated = this.migrateTask(g);
+        if (!migrated.source) migrated.source = source;
+        return migrated;
+      });
     } catch { return []; }
   }
 
@@ -705,7 +750,9 @@ export class GoalsComponent {
     };
   }
 
-  private save() {
+  private saveAll() {
     this.storage.set(this.KEY, this.tasks());
+    this.storage.set(this.BANK_KEY, this.bancoTareas());
+    this.storage.set(this.COMM_KEY, this.comunidadTareas());
   }
 }
